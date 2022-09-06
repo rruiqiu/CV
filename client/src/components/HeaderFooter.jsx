@@ -12,6 +12,7 @@ function Footer () {
 
   return (<div className='footer'>
     <p className="HeaderFooter">{data}</p>
+    <p className="Description">This is a daily generated background image fetched from BingWallpaper</p>
   </div>
   )
 }

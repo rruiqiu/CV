@@ -109,3 +109,15 @@
   opacity: 0.9;
   color: hsla(0, 0%, 100%, 0.8);
 }
+.aboutBackground {
+  background-color: #27496d;
+}
+
+.Description {
+  font-size: 13px;
+  opacity: 70%;
+}
+
+.HeaderFooter {
+  margin-bottom: 8px;
+}
