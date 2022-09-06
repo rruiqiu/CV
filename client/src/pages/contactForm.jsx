@@ -8,7 +8,7 @@ const ConotactForm = () => {
     message: ""
   })
 
-  const handleSubmit = (product) => {
+  const handleSubmit = (event) => {
     Axios.post("http://localhost:3004/information", {
       name: contact.name,
       email: contact.email,
@@ -16,6 +16,13 @@ const ConotactForm = () => {
     })
       .then(res => console.log(res.data))
       .catch(err => console.log(err))
+    event.preventDefault()
+    alert("Your information has been submitted")
+    setContact({
+      name: "",
+      email: "",
+      message: ""
+    })
   }
   function handleChange (event) {
     const { name, value } = event.target
