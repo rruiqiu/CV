@@ -7,7 +7,8 @@ import Navbar from "./Navbar"
 function TextLinkExample () {
   return (
     <section id="header">
-      <Navbar />
+      <Navbar
+        variant={"dark"} />
       <div className='content'>
         <Typist
           cursor={{ hideWhenDone: true, element: "" }}

@@ -110,7 +110,7 @@
   color: hsla(0, 0%, 100%, 0.8);
 }
 .aboutBackground {
-  background-color: #27496d;
+  background-color: #dbecfe;
 }
 
 .Description {
@@ -120,4 +120,13 @@
 
 .HeaderFooter {
   margin-bottom: 8px;
+}
+
+.aboutnabvar {
+  color: black !important;
+}
+
+.size {
+  height: 600px;
+  width: 500px;
 }
