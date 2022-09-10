@@ -12,11 +12,11 @@ function About () {
       <Navbar variant="light"
         navbarcolor="aboutnabvar"
       />
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <Intro />
 
         <section id="projects">Project</section>
-
+        <Projects />
         <section id="contacts">Contact Me</section>
         <ContactMe />
       </Container>
