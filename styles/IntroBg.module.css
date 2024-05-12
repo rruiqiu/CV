@@ -1,0 +1,65 @@
+.BG {
+  width: 100vw;
+  height: 100vh;
+}
+
+.content {
+  display: flex;
+  /* -webkit-box-pack: center; */
+  justify-content: center;
+  /* -webkit-box-align: center; */
+  align-items: center;
+  flex-direction: column;
+  height: 90vh;
+  text-align: center;
+}
+
+.name {
+  text-align: center;
+  color: hsla(0, 0%, 100%, 0.9);
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 4.5rem;
+  opacity: 0.9;
+}
+
+.linkspace {
+  margin: 0 13px;
+  text-decoration: none;
+  font-size: 25px;
+  background: none;
+  color: aliceblue;
+  opacity: 0.66;
+}
+
+.linkspace {
+  margin: 0 13px;
+  text-decoration: none;
+  font-size: 25px;
+  background: none;
+  color: aliceblue;
+  opacity: 0.66;
+}
+.linkspace:hover {
+  opacity: 1; /* Changing opacity to fully opaque on hover */
+}
+.footer {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  opacity: 0.9;
+  color: hsla(0, 0%, 100%, 0.8);
+  justify-content: flex-end;
+  height: 6vh;
+}
+
+.Description {
+  font-size: 16px;
+  opacity: 70%;
+}
+
+.HeaderFooter {
+  /* margin-bottom: 8px; */
+  font-size: 118%;
+  margin: 0 auto;
+}
