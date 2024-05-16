@@ -3,17 +3,16 @@ import Link from 'next/link'
 
 async function getBG() {
   const res = await fetch(
-    'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA'
+    'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
+    { cache: 'no-store' }
   )
   return res.json()
 }
-
+//also add another function to allow user auto pick a random wallpaper from 0-7
 const Bg = async () => {
-  // console.log(getBG())
-
   const BGData = getBG()
   const url = await Promise.all([BGData])
-  console.log(url[0])
+  // console.log(url)
 
   const ImageLink = url[0].url
   return (
@@ -30,15 +29,19 @@ const Bg = async () => {
         <div className={styles.content}>
           <h1 className={styles.name}>Richard Qiu</h1>
           <nav className={styles.navbar}>
-            <Link className={styles.linkspace} href={'/About'}>
+            <Link
+              className={styles.linkspace}
+              href={'https://rruiqiu.github.io/Blog/'}>
               BLOG
             </Link>
 
-            <Link className={styles.linkspace} href={'/About'}>
+            <Link className={styles.linkspace} href={'/about'}>
               HOME
             </Link>
 
-            <Link className={styles.linkspace} href={'/About'}>
+            <Link
+              className={styles.linkspace}
+              href={'https://github.com/rruiqiu'}>
               GITHUB
             </Link>
           </nav>

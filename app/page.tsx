@@ -4,7 +4,6 @@ import BG from '@/components/IntroBg'
 const Home = () => {
   return (
     <main>
-      <div style={{ display: 'flex' }}></div>
       <BG></BG>
     </main>
   )

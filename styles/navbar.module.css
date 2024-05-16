@@ -1,0 +1,75 @@
+.liclass {
+  margin: 0 20px;
+  list-style: none;
+  display: inline;
+}
+
+/* the condition when the viewport is at least 516px, the below condition will trigger and set the width to itx max - 800px here */
+@media (min-width: 516px) {
+  .navbarContainer {
+    width: 100%;
+  }
+}
+
+.navbarContainer {
+  display: flex;
+  max-width: 900px;
+  justify-content: flex-end;
+}
+
+.navbar {
+  text-align: left;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid rgba(31, 29, 29, 0.18);
+  opacity: 0.95;
+}
+
+.navbarDark {
+  text-align: left;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.604);
+  opacity: 0.95;
+}
+
+.linkStyleDark {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.893);
+  font-size: 22px;
+  font-family: 'Quicksand', sans-serif;
+}
+.linkStyleDark:hover {
+  text-decoration: none;
+  color: rgb(255, 115, 0);
+  font-size: 22px;
+}
+
+.linkStyle {
+  text-decoration: none;
+  color: rgba(5, 5, 5, 0.893);
+  font-size: 22px;
+  font-family: 'Quicksand', sans-serif;
+}
+.linkStyle:hover {
+  text-decoration: none;
+  color: rgb(255, 115, 0);
+  font-size: 22px;
+}
+.ul {
+  padding: 0 0;
+}
+.translate {
+  font-size: 26px;
+}
+.translatepos {
+  margin: 0 6px;
+}
+.functionIcon {
+  margin-right: auto;
+  margin-left: 0;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+}
