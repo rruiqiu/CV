@@ -1,26 +1,63 @@
+'use client'
 import styles from '@/styles/IntroBg.module.css'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { json } from 'stream/consumers'
 
-async function getBG() {
-  const res = await fetch(
-    'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
-    { cache: 'no-store' }
-  )
-  return res.json()
+//add random function that will allow the user to choose a random image.
+//also exploring the cache ability that can reduce the refetching request
+
+interface data {
+  ImageLink: string | null
+  copyright: string | null
 }
-//also add another function to allow user auto pick a random wallpaper from 0-7
-const Bg = async () => {
-  const BGData = getBG()
-  const url = await Promise.all([BGData])
-  // console.log(url)
 
-  const ImageLink = url[0].url
+const Bg = () => {
+  const [data, setData] = useState<data>({
+    ImageLink: '',
+    copyright: '',
+  })
+
+  useEffect(() => {
+    GetData()
+  }, [])
+
+  const GetData = async () => {
+    const requestOptions: RequestInit = {
+      method: 'GET',
+      redirect: 'follow',
+    }
+    try {
+      const response = await fetch(
+        'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
+        requestOptions
+      )
+      if (response.ok) {
+        const jsonData = await response.json()
+        const url = jsonData.url
+        const copyright = jsonData.copyright
+
+        // if (localStorage.getItem('ImageLink') !== url && localStorage.getItem('copyright') !== copyright) {
+        setData({
+          ImageLink: url,
+          copyright: copyright,
+        })
+        localStorage.setItem('ImageLink', url)
+        localStorage.setItem('copyright', copyright)
+        // }
+
+        console.log(jsonData)
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
   return (
     <>
       <div
         className={styles.BG}
         style={{
-          background: `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${ImageLink})`,
+          backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${data.ImageLink})`,
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
           backgroundAttachment: 'fixed',
@@ -48,7 +85,7 @@ const Bg = async () => {
         </div>
         <div className={styles.footer}>
           <div>
-            <p className={styles.HeaderFooter}>{url[0].copyright}</p>
+            <p className={styles.HeaderFooter}>{data.copyright}</p>
           </div>
           <div>
             <p className={styles.Description}>
