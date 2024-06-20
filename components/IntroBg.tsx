@@ -68,7 +68,8 @@ const Bg = () => {
           <nav className={styles.navbar}>
             <Link
               className={styles.linkspace}
-              href={'https://rruiqiu.github.io/Blog/'}>
+              href={'https://rruiqiu.github.io/Blog/'}
+              prefetch={false}>
               BLOG
             </Link>
 
