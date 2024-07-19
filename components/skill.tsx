@@ -1,5 +1,5 @@
 interface navbarprops {
-  darkmode: string
+  theme: string
   language: string
 }
 const skills: React.FC<navbarprops> = (props) => {
@@ -7,7 +7,7 @@ const skills: React.FC<navbarprops> = (props) => {
     <>
       <h1
         style={
-          props.darkmode === 'Light' ? { color: 'black' } : { color: 'white' }
+          props.theme === 'Light' ? { color: 'black' } : { color: 'white' }
         }>
         My Skills
       </h1>

@@ -67,7 +67,7 @@ const navbar: React.FC<navbarprops> = (props) => {
                     ? style.linkStyle
                     : style.linkStyleDark
                 }
-                href={'/about'}>
+                href={'#about'}>
                 About
               </Link>
             </li>
@@ -78,7 +78,7 @@ const navbar: React.FC<navbarprops> = (props) => {
                     ? style.linkStyle
                     : style.linkStyleDark
                 }
-                href={'/projects'}>
+                href={'#projects'}>
                 Projects
               </Link>
             </li>
