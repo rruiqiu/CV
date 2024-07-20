@@ -6,16 +6,33 @@ import Link from 'next/link'
 const Bg = async () => {
   // const url = await Promise.all([BGData])
 
-  const response = await fetch(
-    'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
-    { cache: 'no-store' }
-  )
+  const fetchData = async () => {
+    const response = await fetch(
+      'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
+      { cache: 'no-store' }
+    )
 
-  if (!response.ok) {
-    throw new Error('Failed')
+    if (!response.ok) {
+      throw new Error('Failed')
+    }
+    return response.json()
   }
 
-  const BGData = await response.json()
+  const retryFetch = async (retries = 3) => {
+    for (let i = 0; i < retries; i++) {
+      try {
+        return await fetchData()
+      } catch (error) {
+        if (i < retries - 1) {
+          console.warn(`Retrying fetch... Attempt ${i + 2}`)
+        } else {
+          throw error
+        }
+      }
+    }
+  }
+
+  const BGData = await retryFetch()
   const url = [BGData]
   const ImageLink = url[0]?.url
   return (
