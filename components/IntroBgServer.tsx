@@ -11,7 +11,7 @@ async function getBG() {
   //   return res.json()
   // }
 
-  const url =
+  const url: string =
     'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA'
   try {
     const response = await fetch(url, { cache: 'no-store' })
