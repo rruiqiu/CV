@@ -27,8 +27,11 @@ async function getBG() {
 }
 //also add another function to allow user auto pick a random wallpaper from 0-7
 const Bg = async () => {
-  const BGData = getBG()
-  const url = await Promise.all([BGData])
+  const BGData = await getBG()
+  console.log(BGData)
+
+  // const url = await Promise.all([BGData])
+  const url = [BGData]
   // console.log(url)
 
   const ImageLink = url[0].url
