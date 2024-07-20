@@ -2,41 +2,46 @@
 import styles from '@/styles/IntroBg.module.css'
 import Link from 'next/link'
 
+async function getBG() {
+  // const res = await fetch(
+  //   'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
+  //   { cache: 'no-store' }
+  // )
+  // if (res.ok) {
+  //   return res.json()
+  // }
+
+  const url: string =
+    'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA'
+  try {
+    const response = await fetch(url, { cache: 'no-store' })
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`)
+    }
+
+    const json = await response.json()
+    return json
+  } catch (error: any) {
+    console.error(error.message)
+  }
+}
+
 //also add another function to allow user auto pick a random wallpaper from 0-7
 const Bg = async () => {
   const BGData = await getBG()
   console.log(BGData)
 
+  if (!BGData) {
+    console.error('Failed to fetch background data')
+    return
+  }
   // const url = await Promise.all([BGData])
   const url = [BGData]
-  // console.log(url)
-
-  const ImageLink = url[0].url
-
-  async function getBG() {
-    // const res = await fetch(
-    //   'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
-    //   { cache: 'no-store' }
-    // )
-    // if (res.ok) {
-    //   return res.json()
-    // }
-
-    const url: string =
-      'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA'
-    try {
-      const response = await fetch(url, { cache: 'no-store' })
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`)
-      }
-
-      const json = await response.json()
-      return json
-    } catch (error: any) {
-      console.error(error.message)
-    }
+  const ImageLink = url[0]?.url
+  if (!ImageLink) {
+    console.error('Image URL not found in the fetched data')
+    return
   }
-
   return (
     <>
       <div
