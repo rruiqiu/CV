@@ -8,9 +8,24 @@ const Bg = async () => {
   // const url = await Promise.all([BGData])
 
   const fetchData = async () => {
+    const vercelToken = '07rkJFlWZjjPBbtO25SHczBw'
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', 'Bearer ' + vercelToken)
+    const requestOptions: RequestInit = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+      cache: 'no-store',
+    }
+
+    // fetch("https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA", requestOptions)
+    //   .then((response) => response.text())
+    //   .then((result) => console.log(result))
+    //   .catch((error) => console.error(error));
+
     const response = await fetch(
       'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
-      { cache: 'no-store' }
+      requestOptions
     )
 
     if (!response.ok) {
