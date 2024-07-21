@@ -1,7 +1,8 @@
 //this is the example of the server fetching which will handle the cache and validation better, but in order to host my CV into github pages, the site has to be static. (I will consider use this after I migrate this site to the server)
 import styles from '@/styles/IntroBg.module.css'
 import Link from 'next/link'
-
+export const maxDuration = 5
+export const dynamic = 'force-dynamic'
 //also add another function to allow user auto pick a random wallpaper from 0-7
 const Bg = async () => {
   // const url = await Promise.all([BGData])
@@ -18,7 +19,7 @@ const Bg = async () => {
     return response.json()
   }
 
-  const retryFetch = async (retries = 3) => {
+  const retryFetch = async (retries = 5) => {
     for (let i = 0; i < retries; i++) {
       try {
         return await fetchData()
