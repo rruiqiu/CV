@@ -1,6 +1,12 @@
 .BG {
   width: 100vw;
   height: 100vh;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(https://bing.biturl.top/?resolution=1920&format=image&index=0&mkt=en-CA);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 .content {
