@@ -1,9 +1,9 @@
 'use client'
 import style from '@/styles/about.module.css'
-import NavBar from '@/components/navbar'
-import Skills from '@/components/skill'
+import NavBar from '@/app/components/navbar'
+import Skills from '@/app/components/skill'
 import { useState } from 'react'
-import About from '@/components/about'
+import About from '@/app/components/about'
 const AboutPage = () => {
   const [theme, setTheme] = useState<string>('Light')
   const [language, setLanguage] = useState<string>('En')
