@@ -3,26 +3,17 @@ import styles from '@/styles/IntroBg.module.css'
 import Link from 'next/link'
 export const maxDuration = 5
 export const dynamic = 'force-dynamic'
+
 //also add another function to allow user auto pick a random wallpaper from 0-7
 const Bg = async () => {
   // const url = await Promise.all([BGData])
 
   const fetchData = async () => {
-    const vercelToken = '07rkJFlWZjjPBbtO25SHczBw'
-    const myHeaders = new Headers()
-    myHeaders.append('Authorization', 'Bearer ' + vercelToken)
     const requestOptions: RequestInit = {
       method: 'GET',
-      headers: myHeaders,
       redirect: 'follow',
-      cache: 'no-store',
+      // cache: 'no-store',
     }
-
-    // fetch("https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA", requestOptions)
-    //   .then((response) => response.text())
-    //   .then((result) => console.log(result))
-    //   .catch((error) => console.error(error));
-
     const response = await fetch(
       'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
       requestOptions
@@ -31,26 +22,15 @@ const Bg = async () => {
     if (!response.ok) {
       throw new Error('Failed')
     }
-    return response.json()
+
+    const data = await response.json()
+    console.log(data)
+    return data
   }
 
-  const retryFetch = async (retries = 5) => {
-    for (let i = 0; i < retries; i++) {
-      try {
-        return await fetchData()
-      } catch (error) {
-        if (i < retries - 1) {
-          console.warn(`Retrying fetch... Attempt ${i + 2}`)
-        } else {
-          throw error
-        }
-      }
-    }
-  }
-
-  const BGData = await retryFetch()
-  const url = [BGData]
-  const ImageLink = url[0]?.url
+  const BGData: any = await fetchData()
+  const ImageLink = BGData.url
+  const copyright = BGData.copyright
   return (
     <>
       <div
@@ -84,7 +64,7 @@ const Bg = async () => {
         </div>
         <div className={styles.footer}>
           <div>
-            <p className={styles.HeaderFooter}>{url[0].copyright}</p>
+            <p className={styles.HeaderFooter}>{copyright}</p>
           </div>
           <div>
             <p className={styles.Description}>
