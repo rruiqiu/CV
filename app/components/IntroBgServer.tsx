@@ -17,11 +17,7 @@ const Bg = async () => {
       requestOptions
     )
 
-    if (!response.ok) {
-      throw new Error('Failed')
-    }
-
-    const data = response.json()
+    const data = await response.json()
     // console.log(data)
     return data
   }
