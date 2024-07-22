@@ -22,7 +22,7 @@ const Bg = async () => {
     }
 
     const data = await response.json()
-    console.log(data)
+    // console.log(data)
     return data
   }
 
