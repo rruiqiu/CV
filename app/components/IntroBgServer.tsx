@@ -11,6 +11,10 @@ const Bg = async () => {
       method: 'GET',
       redirect: 'follow',
       cache: 'no-store',
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+      },
     }
     const response = await fetch(
       'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
