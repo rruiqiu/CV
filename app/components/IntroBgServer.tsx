@@ -12,15 +12,16 @@ const Bg = async () => {
     const requestOptions: RequestInit = {
       method: 'GET',
       redirect: 'follow',
-      cache: 'no-store',
+      // cache: 'no-store',
+      next: { revalidate: 3600 },
     }
     //'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA'
-    //
+    //yeah this api won't work in production
     const url =
       'https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US'
     const response = await fetch(url, requestOptions)
 
-    console.log(response)
+    // console.log(response)
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
     }
