@@ -4,6 +4,7 @@ import NavBar from '@/app/components/navbar'
 import Skills from '@/app/components/skill'
 import { useState } from 'react'
 import About from '@/app/components/about'
+import Project from '@/app/components/project'
 const AboutPage = () => {
   const [theme, setTheme] = useState<string>('Light')
   const [language, setLanguage] = useState<string>('En')
@@ -30,7 +31,10 @@ const AboutPage = () => {
         <section id="about">
           <About theme={theme} language={language} />
         </section>
-
+        <hr />
+        <section id="projects">
+          <Project theme={theme} language={language} />
+        </section>
         <div>
           <Skills theme={theme} language={language} />
         </div>
