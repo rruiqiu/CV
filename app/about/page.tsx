@@ -31,7 +31,13 @@ const AboutPage = () => {
         <section id="about">
           <About theme={theme} language={language} />
         </section>
-        <hr />
+        <hr
+          style={
+            theme === 'Light'
+              ? {}
+              : { border: '1px solid rgb(251 251 251 / 58%)' }
+          }
+        />
         <section id="projects">
           <Project theme={theme} language={language} />
         </section>

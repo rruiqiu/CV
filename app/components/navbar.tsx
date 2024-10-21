@@ -29,7 +29,7 @@ const navbar: React.FC<navbarprops> = (props) => {
         }>
         <div className={style.navbarContainer}>
           <div className={style.functionIcon}>
-            <button
+            {/* <button
               onClick={handleLanguageChange}
               style={{ border: 'none', backgroundColor: 'transparent' }}>
               <Link
@@ -42,7 +42,7 @@ const navbar: React.FC<navbarprops> = (props) => {
                 className={style.translatepos}>
                 <RiTranslate className={style.translate} />
               </Link>
-            </button>
+            </button> */}
             <button
               onClick={handleThemeChange}
               style={{ border: 'none', backgroundColor: 'transparent' }}>

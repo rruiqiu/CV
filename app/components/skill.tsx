@@ -9,7 +9,7 @@ const skills: React.FC<navbarprops> = (props) => {
         style={
           props.theme === 'Light' ? { color: 'black' } : { color: 'white' }
         }>
-        My Skills
+        <br />
       </h1>
     </>
   )
