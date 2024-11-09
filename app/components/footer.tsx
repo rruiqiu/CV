@@ -13,28 +13,31 @@ const footer: React.FC<navbarprops> = (props) => {
     <>
       <div className={styles.footer}>
         <div style={{ marginRight: 'auto' }}>
-          <Link href={''}>
+          <Link href={'/'}>
             <IoMdHome
               className={
                 props.theme === 'Light' ? styles.lighttheme : styles.darktheme
               }
             />
           </Link>
-          <Link href={''}>
+          <Link href={'https://github.com/rruiqiu'}>
             <FaGithub
               className={
                 props.theme === 'Light' ? styles.lighttheme : styles.darktheme
               }
             />
           </Link>
-          <Link href={''}>
+          <Link href={'https://www.linkedin.com/in/rruiqiu/'}>
             <FaLinkedin
               className={
                 props.theme === 'Light' ? styles.lighttheme : styles.darktheme
               }
             />
           </Link>
-          <Link href={''}>
+          <Link
+            href={
+              'https://drive.google.com/file/d/1k0nkukyJFc_dywqHLxVVPFd0glEgfqN8/view?usp=sharing'
+            }>
             <IoDocumentTextOutline
               className={
                 props.theme === 'Light' ? styles.lighttheme : styles.darktheme

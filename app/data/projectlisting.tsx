@@ -5,7 +5,7 @@ const projectlisting = [
     name: 'Personal Website',
     year: 2024,
     description:
-      'Designed and built an online personal portfolio from scratch using React. Constructed a REST API backend for the contacts management frontend page. With authentication login and page router protection and more...',
+      'Designed and built an online personal portfolio from scratch using Next.js and TypeScript. Auto deployed through Vercel.',
     stack: ['Next.js', 'TypeScript', 'Vercel'],
     github: 'https://github.com/rruiqiu/CV-frontend',
     demo: 'https://ruiqiu.netlify.app/',
