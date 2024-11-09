@@ -94,7 +94,7 @@ const about: React.FC<navbarprops> = (props) => {
                 style={{
                   marginTop: '0px',
                 }}>
-                Hi, this is Richard – welcome to my homepage! I'm in my final
+                Hi, this is Richard – welcome to my website! I'm in my final
                 year at McMaster University, where I focus my study on computing
                 systems, high-performance computing, computer architecture,
                 operating systems, machine learning, and modern web
