@@ -53,5 +53,27 @@ const projectlisting = [
     github: 'https://github.com/rruiqiu/MAC_AEV',
     demo: 'https://ruiqiu.netlify.app/AEVdemo',
   },
+  {
+    id: 6,
+    img: '/images/ekanban.jpg',
+    name: 'Warehouse Ordering System - Veoneer',
+    year: 2023,
+    description:
+      'Developed an advanced warehouse reels ordering system with features for real-time order display, comprehensive history tracking, and dynamic data fetching and syncing. This system reduced cycle time by 70%, streamlining order processing and significantly improving operational efficiency.',
+    stack: ['Next.js', 'TypeScript', 'Flask', 'FastAPI'],
+    // github: 'https://github.com/rruiqiu/MAC_AEV',
+    // demo: 'https://ruiqiu.netlify.app/AEVdemo',
+  },
+  {
+    id: 7,
+    img: '/images/image.jpg',
+    name: 'Smart Receiving Device - Veoneer',
+    year: 2023,
+    description:
+      'Developed the SRD (Smart Receiving Device) in the warehouse using C#, integrating the Keyence SR-5000X camera and additional sensor devices to enable up to 8 bar-code reads per scan, resulting in a 50% increase in production efficiency and improved materials traceability',
+    stack: ['C#', 'Python'],
+    // github: 'https://github.com/rruiqiu/MAC_AEV',
+    // demo: 'https://ruiqiu.netlify.app/AEVdemo',
+  },
 ]
 export default projectlisting

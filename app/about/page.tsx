@@ -5,6 +5,8 @@ import Skills from '@/app/components/skill'
 import { useState } from 'react'
 import About from '@/app/components/about'
 import Project from '@/app/components/project'
+import CurrentProject from '@/app/components/currentproject'
+import Footer from '@/app/components/footer'
 const AboutPage = () => {
   const [theme, setTheme] = useState<string>('Light')
   const [language, setLanguage] = useState<string>('En')
@@ -41,10 +43,23 @@ const AboutPage = () => {
         <section id="projects">
           <Project theme={theme} language={language} />
         </section>
-        <div>
+        {/* <div>
           <Skills theme={theme} language={language} />
-        </div>
+        </div> */}
+        <hr
+          style={
+            theme === 'Light'
+              ? {}
+              : { border: '1px solid rgb(251 251 251 / 58%)' }
+          }
+        />
+        <section id="Currentprojects">
+          <CurrentProject theme={theme} language={language} />
+        </section>
       </div>
+      <section id={theme === 'Light' ? 'footer' : 'footerdark'}>
+        <Footer theme={theme} language={language} />
+      </section>
     </div>
   )
 }

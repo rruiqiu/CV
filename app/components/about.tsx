@@ -94,17 +94,15 @@ const about: React.FC<navbarprops> = (props) => {
                 style={{
                   marginTop: '0px',
                 }}>
-                Hi, this is Richard. Welcome to my Homepage! I am currently in
-                my final year at McMaster University. My academic interests lie
-                in the fields of microelectronics, modern web technologies,
-                embedded systems, and IoT devices. I am particularly keen on
-                exploring the integration of AI with IoT devices. As a future
-                engineer, I am driven to use my skills and knowledge to create
-                innovative and intelligent solutions that can improve people's
-                daily lives. My passion for technology and its potential to
-                bring positive change fuels my desire to stay updated on the
-                latest advancements in IoT, AI, and magic phenomena, with the
-                goal of making a meaningful impact through technology.
+                Hi, this is Richard – welcome to my homepage! I'm in my final
+                year at McMaster University, where I focus my study on computing
+                systems, high-performance computing, computer architecture,
+                operating systems, machine learning, and modern web
+                technologies. As an aspiring engineer, I am driven to apply my
+                skills and knowledge to develop innovative solutions that can
+                improve people's daily lives. My passion for creating positive
+                change keeps me engaged with the latest technologies, with the
+                goal of making a meaning impact to the society.
               </p>
             ) : (
               <p
@@ -114,11 +112,11 @@ const about: React.FC<navbarprops> = (props) => {
                 style={{
                   marginTop: '0px',
                 }}>
-                你好，我是理查德。欢迎访问我的主页！我目前在麦克马斯特大学攻读最后一年的课程。我的学术兴趣在于微电子学、现代网络技术、嵌入式系统和物联网设备领域。我尤其热衷于探索人工智能与物联网设备的整合。作为一名未来的工程师，我有动力利用自己的技能和知识创造出创新的智能解决方案，改善人们的日常生活。我对技术及其带来积极变化的潜力充满热情，这激发了我不断了解物联网、人工智能和魔法现象最新进展的愿望，目的是通过技术产生有意义的影响。
+                你好，我是邱瑞——欢迎来到我的个人主页！我现在是麦克马斯特大学的最后一年，我的研究重点是计算系统、高性能计算、计算机体系结构、操作系统、机器学习和现代网络技术。作为一名有抱负的工程师，我致力于运用我的技能和知识来开发创新的解决方案，以改善人们的日常生活。我对创造积极变革的热情使我不断接触最新技术，目标是对社会产生有意义的影响。
               </p>
             )}
 
-            {props.language === 'En' ? (
+            {/* {props.language === 'En' ? (
               <p
                 className={
                   props.theme === 'Light' ? style.pstyle : style.pstyleDark
@@ -132,9 +130,9 @@ const about: React.FC<navbarprops> = (props) => {
                 }>
                 教育经历: 麦克马斯特大学 电子信息技术工程 (2020-2025)
               </p>
-            )}
+            )} */}
 
-            {props.language === 'En' ? (
+            {/* {props.language === 'En' ? (
               <p
                 className={
                   props.theme === 'Light' ? style.pstyle : style.pstyleDark
@@ -148,7 +146,7 @@ const about: React.FC<navbarprops> = (props) => {
                 }>
                 工作经历: 维宁尔 软件工程实习生 (2023-2024)
               </p>
-            )}
+            )} */}
           </div>
         </div>
       </div>

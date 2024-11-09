@@ -1,0 +1,17 @@
+.darktheme {
+  font-size: 26px;
+  color: rgb(255, 255, 255);
+  margin-right: 20px;
+}
+
+.lighttheme {
+  font-size: 26px;
+  color: rgb(67, 64, 64);
+  margin-right: 20px;
+}
+.footer {
+  display: flex;
+  max-width: 900px;
+  width: 100%;
+  align-items: center;
+}

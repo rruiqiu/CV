@@ -12,7 +12,7 @@ const project: React.FC<navbarprops> = (props) => {
           className={
             props.theme === 'Light' ? style.projectname : style.projectnameDark
           }>
-          My project portfolio
+          My past projects
         </h1>
       ) : (
         <h1
