@@ -102,7 +102,7 @@ const about: React.FC<navbarprops> = (props) => {
                 skills and knowledge to develop innovative solutions that can
                 improve people's daily lives. My passion for creating positive
                 change keeps me engaged with the latest technologies, with the
-                goal of making a meaning impact to the society.
+                goal of making a meaningful impact to the society.
               </p>
             ) : (
               <p
