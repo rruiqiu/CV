@@ -2,14 +2,28 @@
 import style from '@/styles/about.module.css'
 import NavBar from '@/app/components/navbar'
 import Skills from '@/app/components/skill'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import About from '@/app/components/about'
 import Project from '@/app/components/project'
 import CurrentProject from '@/app/components/currentproject'
 import Footer from '@/app/components/footer'
+import { log } from 'node:console'
 const AboutPage = () => {
   const [theme, setTheme] = useState<string>('Light')
   const [language, setLanguage] = useState<string>('En')
+
+  useEffect(() => {
+    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    setTheme(darkModeQuery.matches ? 'Dark' : 'Light')
+    // console.log(darkModeQuery)
+
+    // Listener for theme changes
+    const handleChange = (e: any) => setTheme(e.matches ? 'Dark' : 'Light')
+    darkModeQuery.addEventListener('change', handleChange)
+
+    return () => darkModeQuery.removeEventListener('change', handleChange)
+  }, [])
+
   // Callback function to update theme
   const updateTheme = (newTheme: string) => {
     setTheme(newTheme)
