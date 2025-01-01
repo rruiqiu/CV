@@ -99,11 +99,21 @@
   border-radius: 0.5em;
 }
 .projectButton {
+  /* Reset button defaults when used as a button element */
+  background: none;
+  font: inherit;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  /* Your existing styles */
   margin-right: 1.5em;
   padding: 0.4em 0.6em;
   border: 1px solid;
   border-radius: 15px;
-  /* font-size: 1em; */
+  cursor: pointer;
+  color: inherit; /* This will help with dark/light mode */
+  text-decoration: none;
 }
 .projectButton:hover {
   color: rgb(255, 115, 0);
@@ -125,4 +135,79 @@
   text-decoration: none;
   color: rgba(255, 255, 255, 0.893);
   transition: 0.3s;
+}
+.projectLinkDark button {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.893);
+  transition: 0.3s;
+}
+.projectLink button {
+  text-decoration: none;
+  color: rgba(5, 5, 5, 0.893);
+  transition: 0.3s;
+}
+
+.projectTime {
+  font-size: 1.1rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* For dark theme */
+.projectContentDark .projectTime {
+  color: #999;
+}
+
+.projectHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px;
+  transition: all 0.3s ease;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  z-index: 1001; /* One layer above the overlay */
+}
+.modalContent {
+  position: relative;
+  width: 90%;
+  max-width: 1200px;
+  background: #000;
+  padding: 20px;
+  border-radius: 8px;
+}
+.videoPlayer {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
 }

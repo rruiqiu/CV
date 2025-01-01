@@ -38,7 +38,10 @@ const currentProject: React.FC<navbarprops> = (props) => {
                   ? style.projectContent
                   : style.projectContentDark
               }>
-              <h3>{projectlisting.name}</h3>
+              <div className={style.projectHeader}>
+                <h3>{projectlisting.name}</h3>
+                <span className={style.projectTime}>{projectlisting.year}</span>
+              </div>
               <p>{projectlisting.description}</p>
               <ul
                 className={

@@ -1,10 +1,13 @@
 import projectlisting from '@/app/data/projectlisting'
 import style from '@/styles/project.module.css'
+import { useState } from 'react'
 interface navbarprops {
   theme: string
   language: string
 }
 const project: React.FC<navbarprops> = (props) => {
+  const [showVideo, setShowVideo] = useState(false)
+  const [currentVideo, setCurrentVideo] = useState('')
   return (
     <>
       {props.language === 'En' ? (
@@ -27,10 +30,20 @@ const project: React.FC<navbarprops> = (props) => {
         {projectlisting.map((projectlisting) => (
           <div key={projectlisting.id} className={style.project}>
             <div className={style.projectImage}>
-              <img
-                className={style.projectImageSize}
-                src={projectlisting.img}
-              />
+              {projectlisting.name === 'Lunar Lander Agent Landing' ? (
+                <video
+                  className={style.projectImageSize}
+                  src={projectlisting.img}
+                  autoPlay
+                  loop
+                  muted
+                />
+              ) : (
+                <img
+                  className={style.projectImageSize}
+                  src={projectlisting.img}
+                />
+              )}
             </div>
 
             <div
@@ -39,7 +52,10 @@ const project: React.FC<navbarprops> = (props) => {
                   ? style.projectContent
                   : style.projectContentDark
               }>
-              <h3>{projectlisting.name}</h3>
+              <div className={style.projectHeader}>
+                <h3>{projectlisting.name}</h3>
+                <span className={style.projectTime}>{projectlisting.year}</span>
+              </div>
               <p>{projectlisting.description}</p>
               <ul
                 className={
@@ -65,15 +81,48 @@ const project: React.FC<navbarprops> = (props) => {
                   </a>
                 ) : null}
                 {projectlisting.demo ? (
-                  <a className={style.projectButton} href={projectlisting.demo}>
-                    Demo
-                  </a>
+                  projectlisting.name ===
+                  'MAC AEV(Autonomous Electric Vehicle)' ? (
+                    <button
+                      className={style.projectButton}
+                      onClick={() => {
+                        console.log(projectlisting.demo)
+                        setCurrentVideo(projectlisting.demo)
+                        setShowVideo(true)
+                      }}>
+                      Demo
+                    </button>
+                  ) : (
+                    <a
+                      className={style.projectButton}
+                      href={projectlisting.demo}>
+                      Demo
+                    </a>
+                  )
                 ) : null}
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {showVideo && (
+        <div className={style.modalOverlay} onClick={() => setShowVideo(false)}>
+          <div
+            className={style.modalContent}
+            onClick={(e) => e.stopPropagation()}>
+            <button
+              className={style.closeButton}
+              onClick={() => setShowVideo(false)}>
+              ×
+            </button>
+            <video controls autoPlay muted className={style.videoPlayer}>
+              <source src={currentVideo} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      )}
     </>
   )
 }
