@@ -5,7 +5,7 @@ const projectlisting = [
     name: 'Personal Website',
     year: 2024,
     description:
-      'Designed and built this beautiful online personal portfolio from scratch using Next.js and TypeScript, utilize server rendering technique to improve client response time and set up github actions to auto deploy through Vercel.',
+      'Designed and developed this beautiful personal portfolio from scratch using Next.js and TypeScript. Optimized performance with server-side rendering for faster client response times and automated deployments via GitHub Actions and Vercel.',
     stack: ['Next.js', 'TypeScript', 'Vercel'],
     github: 'https://github.com/rruiqiu/CV-frontend',
     demo: 'https://www.richardqiu.me/',
@@ -16,7 +16,7 @@ const projectlisting = [
     name: 'Spatial Mapping Device',
     year: 2022,
     description:
-      'Designed and Built an embedded spatial measurement system using a time-of-flight sensor to acquire in-formation about the area surrounded clients. Using Python NumPy and Open3D to map spatial information into 3D. UART and I2C protocol for Hardware and Software communication.',
+      'Designed and built an embedded spatial measurement system using a ToF (Time-of-Flight) sensor to capture surrounding area data. Utilized Python NumPy and Open3D for 3D spatial mapping. Utilized UART and I2C for efficient software-hardware communication.',
     stack: ['Embedded C', 'Python', 'MCU', 'I2C/UART'],
     github: 'https://github.com/rruiqiu/SPATIAL-MAPPING-USING-TIME-OF-FLIGHT',
     // demo: "https://ruiqiu.netlify.app/",
@@ -27,7 +27,7 @@ const projectlisting = [
     name: 'McMaster Recycling Plant Sorting System',
     year: 2022,
     description:
-      'In a small group of three, designed and developed an efficient Python program for the McMaster Recycling Plant Sorting System, by using the IR(infrared) techniques, significantly increased the sorting accuracy from 50% to 93%',
+      'Collaborated in a team of three to design and develop an efficient Python program for the McMaster Recycling Plant Sorting System. Leveraged infrared (IR) technology to enhance sorting accuracy, improving it from 50% to 93%.',
     stack: ['Python', 'Pandas'],
     github: 'https://github.com/rruiqiu/Recycling-Plant-Sorting-System',
   },
@@ -37,7 +37,7 @@ const projectlisting = [
     name: 'NNS(Newcomer Navigating System) - deltahack9',
     year: 2023,
     description:
-      'As a team of international students, we realized the challenges that incoming international students face when coming to Canada. From securing housing to opening a credit card, these essential tasks can be overwhelming. Our solution is to create a centralized platform that consolidates the most important resources and information',
+      'As a team of international students, we recognized the challenges newcomers face in Canada, from securing housing to opening a credit card. To address this, we developed a centralized platform that consolidates essential resources and information, simplifying the transition for incoming international students.',
     stack: ['React', 'GoogleMapApi'],
     github: 'https://github.com/rruiqiu/delatahack9',
     demo: 'https://devpost.com/software/nns-newcomer-navigating-system',
@@ -48,7 +48,7 @@ const projectlisting = [
     name: 'MAC AEV(Autonomous Electric Vehicle)',
     year: 2023,
     description:
-      'Developed and integrated software and hardware modules for the McMaster AEV, which is built on a small-scale(1/10th) RC vehicle platform. Utilized Jeston Nano and ROS as the running environment for the AEV programs. Programmed the Electronic Speed Controller using the VESC tool. Utilized the SLAM to simultaneously construct a map of the unknown environment and localized itself in the map to perform autonmous driving',
+      'Developed and integrated software and hardware modules for the McMaster AEV, a 1/10th-scale RC vehicle platform. Utilized Jetson Nano and ROS for the AEV’s operating environment, programmed the Electronic Speed Controller with the VESC tool, and implemented SLAM for simultaneous mapping and self-localization to enable autonomous driving.',
     stack: ['C/C++', 'Python', 'VESC'],
     github: 'https://github.com/rruiqiu/MAC_AEV',
     demo: '/images/MacAEV.mov',
@@ -59,7 +59,7 @@ const projectlisting = [
     name: 'Warehouse Ordering System - Veoneer',
     year: 2024,
     description:
-      'Developed an advanced warehouse reels ordering system with features for real-time order display, comprehensive history tracking, and dynamic data fetching and syncing. This system reduced cycle time by 70%, streamlining order processing and significantly improving operational efficiency.',
+      'Designed and developed an advanced warehouse reels ordering system with real-time order display, comprehensive history tracking, and dynamic data syncing. Optimized order processing, reducing cycle time by 70% and significantly enhancing operational efficiency.',
     stack: ['Next.js', 'TypeScript', 'Flask', 'FastAPI'],
     // github: 'https://github.com/rruiqiu/MAC_AEV',
     // demo: 'https://ruiqiu.netlify.app/AEVdemo',
@@ -70,7 +70,7 @@ const projectlisting = [
     name: 'Smart Receiving Device - Veoneer',
     year: 2024,
     description:
-      'Developed the SRD (Smart Receiving Device) in the warehouse using C#, integrating the Keyence SR-5000X camera and additional sensor devices to enable up to 8 bar-code reads per scan, resulting in a 50% increase in production efficiency and improved materials traceability',
+      'Developed the Smart Receiving Device (SRD) for warehouse automation using C#, integrating the Keyence SR-5000X camera and additional sensors to enable up to 8 barcode reads per scan. Improved materials traceability and increased production efficiency by 50%.',
     stack: ['C#', 'Python'],
     // github: 'https://github.com/rruiqiu/MAC_AEV',
     // demo: 'https://ruiqiu.netlify.app/AEVdemo',
@@ -81,7 +81,7 @@ const projectlisting = [
     name: 'High Peformance Computing',
     year: 2024,
     description:
-      'In the High-Performance Computing (HPC) course, I utilized C++ to optimize, profile, and test the performance of key machine learning operations (GEMM, GEMV, SPMM, SPMV) on a supercomputer (SciNet). By implementing cache-efficient algorithms and leveraging advanced techniques such as vectorization (AVX), CPU parallelism (OpenMP), and GPU parallelism (CUDA), I achieved an ultimate 5000x speedup.',
+      'Optimized, profiled, and tested key machine learning operations (GEMM, GEMV, SPMM, SPMV) on the SciNet supercomputer using C++. Achieved a 5000x speedup by implementing cache-efficient algorithms and leveraging vectorization (AVX), CPU parallelism (OpenMP), and GPU parallelism (CUDA).',
     stack: ['C++', 'Linux', 'GoogeTest', 'OpenMP', 'CUDA'],
     github: 'https://github.com/rruiqiu/Cuda',
     // demo: 'https://ruiqiu.netlify.app/AEVdemo',
@@ -92,11 +92,34 @@ const projectlisting = [
     name: 'Lunar Lander Agent Landing',
     year: 2024,
     description:
-      'Implemented a Lunar Lander agent using DQN and Reinforcement Learning, achieving a final average score of 265 in landing the lunar lander on the surface. The agent was trained using the OpenAI Gym environment and PyTorch for the neural network implementation.',
+      'Developed a Lunar Lander agent using Deep Q-Networks (DQN) and Reinforcement Learning, achieving an average score of 265. Trained the agent in the OpenAI Gym environment with PyTorch for neural network implementation.',
     stack: ['Pytorch', 'DQN/RL', 'OpenAI Gym', 'Neural Network'],
     github:
       'https://github.com/rruiqiu/Machine-Learning/blob/main/lab5/DQN_code/Agent.py',
     // demo: 'https://ruiqiu.netlify.app/AEVdemo',
+  },
+  {
+    id: 10,
+    img: '/images/4dm4.jpg',
+    name: 'Out-of-Order Execution Pipeline',
+    year: 2024,
+    description:
+      'Developed an out-of-order CPU execution model with Reorder Buffer (ROB) and Load-Store Queue (LSQ) to optimize instruction processing. Designed instruction fetching, allocation, and commit mechanisms for parallelism. Improved performance with load forwarding to reduce memory latency. Analyzed IPC, ROB, and LSQ size to identify execution bottlenecks.',
+    stack: ['C++', 'Octopus(Cache Simulator)'],
+    // github:
+    //   'https://github.com/rruiqiu/Machine-Learning/blob/main/lab5/DQN_code/Agent.py',
+    // demo: 'https://ruiqiu.netlify.app/AEVdemo',
+  },
+  {
+    id: 11,
+    img: '/images/xv6.png',
+    name: 'XV6 OS',
+    year: 2024,
+    description:
+      'Enhanced the xv6 OS by implementing system calls and kernel features based on MIT’s 6.S081 Operating Systems course. Developed user-mode utilities (sleep, primes, find, xargs) and added syscall debugging tools, including page table printing, backtrace, and lazy allocation.',
+    stack: ['C', 'Unix'],
+    github: 'https://github.com/rruiqiu/xv6-riscv',
+    demo: 'https://rruiqiu.github.io/Blog/OS/OSlab/',
   },
 ]
 export default projectlisting
