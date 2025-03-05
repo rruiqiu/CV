@@ -1,4 +1,15 @@
-const projectlisting = [
+interface ProjectListing {
+  id: number
+  img: string
+  name: string
+  year: number
+  description: string
+  stack: string[]
+  github?: string // Optional property
+  demo?: string // Optional property
+}
+
+const projectlisting: ProjectListing[] = [
   {
     id: 1,
     img: '/images/comingsoon.jpg',
