@@ -76,7 +76,9 @@ const project: React.FC<navbarprops> = (props) => {
                 {projectlisting.github ? (
                   <a
                     className={style.projectButton}
-                    href={projectlisting.github}>
+                    href={projectlisting.github}
+                    target="_blank"
+                    rel="noopener noreferrer">
                     Github
                   </a>
                 ) : null}
@@ -95,7 +97,9 @@ const project: React.FC<navbarprops> = (props) => {
                   ) : (
                     <a
                       className={style.projectButton}
-                      href={projectlisting.demo}>
+                      href={projectlisting.demo}
+                      target="_blank"
+                      rel="noopener noreferrer">
                       Demo
                     </a>
                   )

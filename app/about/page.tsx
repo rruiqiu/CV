@@ -8,6 +8,8 @@ import Project from '@/app/components/project'
 import CurrentProject from '@/app/components/currentproject'
 import Footer from '@/app/components/footer'
 import { log } from 'node:console'
+import currentprojectlisting from '@/app/data/currentprojectlisting'
+
 const AboutPage = () => {
   const [theme, setTheme] = useState<string>('Light')
   const [language, setLanguage] = useState<string>('En')
@@ -60,13 +62,15 @@ const AboutPage = () => {
         {/* <div>
           <Skills theme={theme} language={language} />
         </div> */}
-        <hr
-          style={
-            theme === 'Light'
-              ? {}
-              : { border: '1px solid rgb(251 251 251 / 58%)' }
-          }
-        />
+        {currentprojectlisting.length > 0 && (
+          <hr
+            style={
+              theme === 'Light'
+                ? {}
+                : { border: '1px solid rgb(251 251 251 / 58%)' }
+            }
+          />
+        )}
         <section id="Currentprojects">
           <CurrentProject theme={theme} language={language} />
         </section>

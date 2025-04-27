@@ -5,6 +5,10 @@ interface navbarprops {
   language: string
 }
 const currentProject: React.FC<navbarprops> = (props) => {
+  if (!projectlisting || projectlisting.length === 0) {
+    return null
+  }
+
   return (
     <>
       {props.language === 'En' ? (
@@ -62,12 +66,18 @@ const currentProject: React.FC<navbarprops> = (props) => {
                 {projectlisting.github ? (
                   <a
                     className={style.projectButton}
-                    href={projectlisting.github}>
+                    href={projectlisting.github}
+                    target="_blank"
+                    rel="noopener noreferrer">
                     Github
                   </a>
                 ) : null}
                 {projectlisting.demo ? (
-                  <a className={style.projectButton} href={projectlisting.demo}>
+                  <a
+                    className={style.projectButton}
+                    href={projectlisting.demo}
+                    target="_blank"
+                    rel="noopener noreferrer">
                     Demo
                   </a>
                 ) : null}

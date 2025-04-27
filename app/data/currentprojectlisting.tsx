@@ -10,17 +10,17 @@ interface ProjectListing {
 }
 
 const projectlisting: ProjectListing[] = [
-  {
-    id: 1,
-    img: '/images/comingsoon.jpg',
-    name: 'Autonomous Driving Bike - Capstone',
-    year: 2025,
-    description:
-      'From hardware to software, building an interesting autonmous driving bike project aim to resolve the last-mile problem. (Looking for Mobile side collaboration and commercialization opportunities.)',
-    stack: ['Raspi', 'Linux', 'MQTT', 'AWS EC2', 'Redis'],
-    // github: 'https://github.com/rruiqiu/SPATIAL-MAPPING-USING-TIME-OF-FLIGHT',
-    // demo: "https://ruiqiu.netlify.app/",
-  },
+  // {
+  //   id: 1,
+  //   img: '/images/comingsoon.jpg',
+  //   name: 'Autonomous Driving Bike - Capstone',
+  //   year: 2025,
+  //   description:
+  //     'From hardware to software, building an interesting autonmous driving bike project aim to resolve the last-mile problem. (Looking for Mobile side collaboration and commercialization opportunities.)',
+  //   stack: ['Raspi', 'Linux', 'MQTT', 'AWS EC2', 'Redis'],
+  //   // github: 'https://github.com/rruiqiu/SPATIAL-MAPPING-USING-TIME-OF-FLIGHT',
+  //   // demo: "https://ruiqiu.netlify.app/",
+  // },
   // {
   //   id: 3,
   //   img: '/images/HPC.png',
