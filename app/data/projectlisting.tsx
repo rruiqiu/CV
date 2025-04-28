@@ -127,7 +127,7 @@ const projectlisting = [
     name: 'Autonomous Driving Bike - ECE Capstone Winner',
     year: 2025,
     description:
-      'An autonomous self-driving bike designed to address the last-mile problem in bike sharing. Developed a Next.js web app with Google Maps integration, a FastAPI backend hosted on AWS EC2 using MQTT and Redis Pub/Sub for real-time communication, and PID-based motor control on an ESP32 with GPS data acquisition. Hardware integration included motor driver control, circuit design, and Bluetooth-based manual override. Awarded 3rd Place in the McMaster ECE Capstone Competition.',
+      'An autonomous self-driving bike designed to address the last-mile problem in bike sharing. Developed a Next.js web app with Google Maps integration, a FastAPI backend hosted on AWS EC2 using MQTT and Redis Pub/Sub for real-time communication, and PID-based motor control on an ESP32 with GPS data acquisition. Hardware integration included motor driver control, circuit design, and Bluetooth-based manual override. Awarded ECE department 3rd Place in the McMaster Capstone Competition.',
     stack: ['Raspi', 'Full-Stack', 'Linux', 'Redis', 'AWS EC2'],
     github: 'https://github.com/Auto-Bike',
     demo: 'https://www.macvideo.ca/media/t/1_e66vxp7g',

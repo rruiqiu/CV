@@ -1,3 +1,13 @@
+.footer {
+  display: flex;
+  max-width: 900px;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 10px 20px;
+}
+
 .darktheme {
   font-size: 26px;
   color: rgb(255, 255, 255);
@@ -9,9 +19,29 @@
   color: rgb(67, 64, 64);
   margin-right: 20px;
 }
-.footer {
-  display: flex;
-  max-width: 900px;
-  width: 100%;
-  align-items: center;
+
+.footerText {
+  font-size: 20px;
+  margin: 0px;
+  opacity: 0.8;
+}
+.footerTextLight {
+  color: inherit;
+}
+.footerTextDark {
+  color: white;
+}
+
+@media (max-width: 600px) {
+  .footer {
+    padding: 10px 10px;
+  }
+  .darktheme,
+  .lighttheme {
+    font-size: 23px;
+    margin-right: 8px;
+  }
+  .footerText {
+    font-size: 17px;
+  }
 }

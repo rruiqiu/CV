@@ -66,15 +66,12 @@ const footer: React.FC<navbarprops> = (props) => {
         </div>
         <div>
           <p
-            style={
-              props.theme === 'Light'
-                ? { fontSize: '20px', margin: '0px', opacity: '0.8' }
-                : {
-                    fontSize: '20px',
-                    margin: '0px',
-                    opacity: '0.8',
-                    color: 'white',
-                  }
+            className={
+              styles.footerText +
+              ' ' +
+              (props.theme === 'Light'
+                ? styles.footerTextLight
+                : styles.footerTextDark)
             }>
             Made by Richard@2024
           </p>
