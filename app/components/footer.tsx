@@ -41,7 +41,7 @@ const footer: React.FC<navbarprops> = (props) => {
               }
             />
           </Link>
-          <Link
+          {/* <Link
             href={'https://leetcode.com/u/richardddddddd/'}
             target="_blank"
             rel="noopener noreferrer">
@@ -50,7 +50,7 @@ const footer: React.FC<navbarprops> = (props) => {
                 props.theme === 'Light' ? styles.lighttheme : styles.darktheme
               }
             />
-          </Link>
+          </Link> */}
           <Link
             href={
               'https://drive.google.com/file/d/1k0nkukyJFc_dywqHLxVVPFd0glEgfqN8/view?usp=sharing'
