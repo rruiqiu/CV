@@ -7,7 +7,7 @@ const projectlisting = [
     description:
       'Designed and developed this beautiful personal portfolio from scratch using Next.js and TypeScript. Optimized performance with server-side rendering for faster client response times and automated deployments via GitHub Actions and Vercel.',
     stack: ['Next.js', 'TypeScript', 'Vercel'],
-    github: 'https://github.com/rruiqiu/CV-frontend',
+    github: 'https://github.com/rruiqiu/CV',
     demo: 'https://www.richardqiu.me/',
   },
   {
@@ -94,8 +94,7 @@ const projectlisting = [
     description:
       'Developed a Lunar Lander agent using Deep Q-Networks (DQN) and Reinforcement Learning, achieving an average score of 265. Trained the agent in the OpenAI Gym environment with PyTorch for neural network implementation.',
     stack: ['Pytorch', 'DQN/RL', 'OpenAI Gym', 'Neural Network'],
-    github:
-      'https://github.com/rruiqiu/Machine-Learning/blob/main/lab5/DQN_code/Agent.py',
+    github: 'https://github.com/rruiqiu/Machine-Learning',
     // demo: 'https://ruiqiu.netlify.app/AEVdemo',
   },
   {
@@ -118,8 +117,8 @@ const projectlisting = [
     description:
       'Enhanced the xv6 operating system by implementing custom system calls and kernel-level features as part of MIT’s 6.S081 Operating Systems course. Developed user-space utilities (sleep, primes, find, xargs) and introduced debugging tools such as page table printing, backtracing, and lazy memory allocation.',
     stack: ['C', 'Unix'],
-    github: 'https://github.com/rruiqiu/xv6-riscv',
-    demo: 'https://rruiqiu.github.io/Blog/OS/OSlab/',
+    // github: 'https://github.com/rruiqiu/xv6-riscv',
+    // demo: 'https://rruiqiu.github.io/Blog/OS/OSlab/',
   },
   {
     id: 12,
