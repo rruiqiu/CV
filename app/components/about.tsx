@@ -94,7 +94,7 @@ const about: React.FC<navbarprops> = (props) => {
                 style={{
                   marginTop: '0px',
                 }}>
-                Hi, this is Richard – welcome to my website! I'm in my final
+                {/* Hi, this is Richard – welcome to my website! I'm in my final
                 year at McMaster University, where I focus my study on computing
                 systems, high-performance computing, computer architecture,
                 operating systems, machine learning, and modern web
@@ -102,7 +102,14 @@ const about: React.FC<navbarprops> = (props) => {
                 skills and knowledge to develop innovative solutions that can
                 improve people's daily lives. My passion for creating positive
                 change keeps me engaged with the latest technologies, with the
-                goal of making a meaningful impact to the society.
+                goal of making a meaningful impact to the society. */}
+                Hi, I'm Richard — welcome to my website!
+                <br />I recently graduated from McMaster University ECE with a
+                strong passion for building software applications and applying
+                machine learning to solve real-world problems. I'm especially
+                interested in large-scale systems, cloud and AI infrastructure,
+                IoT, and manufacturing automation — areas where I see exciting
+                opportunities for technology to improve how we live and work.
               </p>
             ) : (
               <p

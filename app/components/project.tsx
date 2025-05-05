@@ -30,13 +30,16 @@ const project: React.FC<navbarprops> = (props) => {
         {projectlisting.map((projectlisting) => (
           <div key={projectlisting.id} className={style.project}>
             <div className={style.projectImage}>
-              {projectlisting.name === 'Lunar Lander Agent Landing' ? (
+              {projectlisting.name === 'Lunar Lander Agent Landing' ||
+              projectlisting.name ===
+                'Autonomous Driving Bike - ECE Capstone Winner' ? (
                 <video
                   className={style.projectImageSize}
                   src={projectlisting.img}
                   autoPlay
                   loop
                   muted
+                  playsInline
                 />
               ) : (
                 <img

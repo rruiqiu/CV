@@ -123,7 +123,7 @@ const projectlisting = [
   },
   {
     id: 12,
-    img: '/images/autobike.jpg',
+    img: '/images/auto_bike.mp4',
     name: 'Autonomous Driving Bike - ECE Capstone Winner',
     year: 2025,
     description:
