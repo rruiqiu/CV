@@ -43,6 +43,7 @@
 .projectImageSize {
   height: 200px;
   width: 300px;
+  object-fit: fill;
   border-radius: 8px;
   display: block;
   margin: auto;

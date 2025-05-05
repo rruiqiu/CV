@@ -59,7 +59,7 @@ const projectlisting = [
     name: 'Warehouse Ordering System - Veoneer',
     year: 2024,
     description:
-      'Designed and developed an advanced warehouse reels ordering system with real-time order display, comprehensive history tracking, and dynamic data syncing. Optimized order processing, reducing cycle time by 70% and significantly enhancing operational efficiency.',
+      'Designed and developed an advanced warehouse materials ordering system with real-time order display, detailed history tracking, and dynamic data synchronization. Optimized order processing, reducing cycle time by 70% and significantly enhancing operational efficiency.',
     stack: ['Next.js', 'TypeScript', 'Flask', 'FastAPI'],
     // github: 'https://github.com/rruiqiu/MAC_AEV',
     // demo: 'https://ruiqiu.netlify.app/AEVdemo',
@@ -70,7 +70,7 @@ const projectlisting = [
     name: 'Smart Receiving Device - Veoneer',
     year: 2024,
     description:
-      'Developed the Smart Receiving Device (SRD) for warehouse automation using C#, integrating the Keyence SR-5000X camera and additional sensors to enable up to 8 barcode reads per scan. Improved materials traceability and increased production efficiency by 50%.',
+      'Developed a Smart Receiving Device for warehouse automation using C#, integrating the Keyence SR-5000X camera and multiple sensors to capture up to 8 barcodes per scan. Enhanced materials traceability and boosted production efficiency by 50%.',
     stack: ['C#', 'Python'],
     // github: 'https://github.com/rruiqiu/MAC_AEV',
     // demo: 'https://ruiqiu.netlify.app/AEVdemo',
@@ -83,7 +83,7 @@ const projectlisting = [
     description:
       'Optimized, profiled, and tested key machine learning operations (GEMM, GEMV, SPMM, SPMV) on the SciNet supercomputer using C++. Achieved a 5000x speedup by implementing cache-efficient algorithms and leveraging vectorization (AVX), CPU parallelism (OpenMP), and GPU parallelism (CUDA).',
     stack: ['C++', 'Linux', 'GoogeTest', 'OpenMP', 'CUDA'],
-    github: 'https://github.com/rruiqiu/Cuda',
+    github: 'https://github.com/rruiqiu/HPC',
     // demo: 'https://ruiqiu.netlify.app/AEVdemo',
   },
   {
@@ -116,7 +116,7 @@ const projectlisting = [
     name: 'XV6 OS',
     year: 2024,
     description:
-      'Enhanced the xv6 OS by implementing system calls and kernel features based on MIT’s 6.S081 Operating Systems course. Developed user-mode utilities (sleep, primes, find, xargs) and added syscall debugging tools, including page table printing, backtrace, and lazy allocation.',
+      'Enhanced the xv6 operating system by implementing custom system calls and kernel-level features as part of MIT’s 6.S081 Operating Systems course. Developed user-space utilities (sleep, primes, find, xargs) and introduced debugging tools such as page table printing, backtracing, and lazy memory allocation.',
     stack: ['C', 'Unix'],
     github: 'https://github.com/rruiqiu/xv6-riscv',
     demo: 'https://rruiqiu.github.io/Blog/OS/OSlab/',
@@ -127,7 +127,7 @@ const projectlisting = [
     name: 'Autonomous Driving Bike - ECE Capstone Winner',
     year: 2025,
     description:
-      'An autonomous self-driving bike designed to address the last-mile problem in bike sharing. Developed a Next.js web app with Google Maps integration, a FastAPI backend hosted on AWS EC2 using MQTT and Redis Pub/Sub for real-time communication, and PID-based motor control on an ESP32 with GPS data acquisition. Hardware integration included motor driver control, circuit design, and Bluetooth-based manual override. Awarded ECE department 3rd Place in the McMaster Capstone Competition.',
+      'Built an autonomous self-driving bike from scratch to address the last-mile bike sharing problem. Developed a Next.js web app with Google Maps integration, a FastAPI backend hosted on AWS EC2 using MQTT and Redis Pub/Sub for real-time communication, and PID-based motor control on an ESP32 with GPS data acquisition. Hardware integration included motor driver control, circuit design, and Bluetooth-based manual override. Awarded ECE department 3rd Place in the McMaster Capstone Competition.',
     stack: ['Raspi', 'Full-Stack', 'Linux', 'Redis', 'AWS EC2'],
     github: 'https://github.com/Auto-Bike',
     demo: 'https://www.macvideo.ca/media/t/1_e66vxp7g',
