@@ -23,7 +23,7 @@
 
   .Profilepicture {
     border-radius: 20px;
-    width: 260px;
+    width: 233px;
     height: auto;
     margin-top: 48px;
     margin-right: 40px;
@@ -65,7 +65,7 @@
 .pstyle {
   font-size: 1.3rem;
   font-family: 'Quicksand', sans-serif;
-  text-align: justify;
+  /* text-align: justify; */
   font-weight: 500;
   margin: 12px 0;
 }
@@ -74,7 +74,7 @@
   color: white;
   font-size: 1.3rem;
   font-family: 'Quicksand', sans-serif;
-  text-align: justify;
+  /* text-align: justify; */
   font-weight: 500;
   margin: 12px 0;
 }

@@ -55,7 +55,7 @@
   text-align: left;
   padding: 25px;
   width: 100%;
-  text-align: justify;
+  /* text-align: justify; */
   font-family: 'Quicksand', sans-serif;
 }
 .projectContentDark {
@@ -64,7 +64,7 @@
   text-align: left;
   padding: 25px;
   width: 100%;
-  text-align: justify;
+  /* text-align: justify; */
   color: rgba(255, 255, 255, 0.85);
   font-family: 'Quicksand', sans-serif;
 }

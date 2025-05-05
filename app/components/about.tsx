@@ -104,12 +104,13 @@ const about: React.FC<navbarprops> = (props) => {
                 change keeps me engaged with the latest technologies, with the
                 goal of making a meaningful impact to the society. */}
                 Hi, I'm Richard — welcome to my website!
-                <br />I recently graduated from McMaster University ECE with a
-                strong passion for building software applications and applying
-                machine learning to solve real-world problems. I'm especially
-                interested in large-scale systems, cloud and AI infrastructure,
-                IoT, and manufacturing automation — areas where I see exciting
-                opportunities for technology to improve how we live and work.
+                <br />I recently graduated from McMaster University with a
+                degree in Electrical and Computer Engineering and a strong
+                passion for building impactful software applications. My
+                interests lie in large-scale systems, cloud and AI
+                infrastructure, IoT, and manufacturing automation — areas where
+                I believe technology can drive meaningful improvements in how we
+                live and work.
               </p>
             ) : (
               <p
