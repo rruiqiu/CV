@@ -87,31 +87,31 @@ const about: React.FC<navbarprops> = (props) => {
               />
             </Link>
             {props.language === 'En' ? (
-              <p
-                className={
-                  props.theme === 'Light' ? style.pstyle : style.pstyleDark
-                }
-                style={{
-                  marginTop: '0px',
-                }}>
-                {/* Hi, this is Richard – welcome to my website! I'm in my final
-                year at McMaster University, where I focus my study on computing
-                systems, high-performance computing, computer architecture,
-                operating systems, machine learning, and modern web
-                technologies. As an aspiring engineer, I am driven to apply my
-                skills and knowledge to develop innovative solutions that can
-                improve people's daily lives. My passion for creating positive
-                change keeps me engaged with the latest technologies, with the
-                goal of making a meaningful impact to the society. */}
-                Hi, I'm Richard — welcome to my website!
-                <br />I recently graduated from McMaster University with a
-                degree in Electrical and Computer Engineering and a strong
-                passion for building impactful software applications. My
-                interests lie in large-scale systems, cloud and AI
-                infrastructure, IoT, and manufacturing automation — areas where
-                I believe technology can drive meaningful improvements in how we
-                live and work.
-              </p>
+              <>
+                <p
+                  className={
+                    props.theme === 'Light' ? style.pstyle : style.pstyleDark
+                  }
+                  style={{
+                    marginTop: '0px',
+                  }}>
+                  Hi, I'm Richard — welcome to my website!
+                </p>
+                <p
+                  className={
+                    props.theme === 'Light' ? style.pstyle : style.pstyleDark
+                  }
+                  style={{
+                    marginTop: '0px',
+                  }}>
+                  I recently graduated from McMaster University with a degree in
+                  Electrical and Computer Engineering and a strong passion for
+                  building impactful software applications. My interests lie in
+                  large-scale systems, cloud and AI infrastructure, IoT, and
+                  manufacturing automation — areas where I believe technology
+                  can drive meaningful improvements in how we live and work.
+                </p>
+              </>
             ) : (
               <p
                 className={
