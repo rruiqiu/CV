@@ -105,11 +105,12 @@ const about: React.FC<navbarprops> = (props) => {
                     marginTop: '0px',
                   }}>
                   I recently graduated from McMaster University with a degree in
-                  Electrical and Computer Engineering and a strong passion for
-                  building impactful software applications. My interests lie in
-                  large-scale systems, cloud and AI infrastructure, IoT, and
-                  manufacturing automation — areas where I believe technology
-                  can drive meaningful improvements in how we live and work.
+                  Electrical and Computer Engineering. I have experience across
+                  several domains, including Full-Stack Development, Systems
+                  Programming, Manufacturing Automation, and Machine Learning.
+                  I'm passionate about building innovative solutions that
+                  improve the way we live and work. Check out my past projects
+                  below — and let's connect!
                 </p>
               </>
             ) : (

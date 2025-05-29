@@ -27,90 +27,94 @@ const project: React.FC<navbarprops> = (props) => {
       )}
 
       <div>
-        {projectlisting.map((projectlisting) => (
-          <div key={projectlisting.id} className={style.project}>
-            <div className={style.projectImage}>
-              {projectlisting.name === 'Lunar Lander Agent Landing' ||
-              projectlisting.name ===
-                'Autonomous Driving Bike - ECE Capstone Winner' ? (
-                <video
-                  className={style.projectImageSize}
-                  src={projectlisting.img}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                />
-              ) : (
-                <img
-                  className={style.projectImageSize}
-                  src={projectlisting.img}
-                />
-              )}
-            </div>
-
-            <div
-              className={
-                props.theme === 'Light'
-                  ? style.projectContent
-                  : style.projectContentDark
-              }>
-              <div className={style.projectHeader}>
-                <h3>{projectlisting.name}</h3>
-                <span className={style.projectTime}>{projectlisting.year}</span>
+        {[...projectlisting]
+          .sort((a, b) => b.year - a.year)
+          .map((projectlisting) => (
+            <div key={projectlisting.id} className={style.project}>
+              <div className={style.projectImage}>
+                {projectlisting.name === 'Lunar Lander Agent Landing' ||
+                projectlisting.name ===
+                  'Autonomous Driving Bike - ECE Capstone Winner' ? (
+                  <video
+                    className={style.projectImageSize}
+                    src={projectlisting.img}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                  />
+                ) : (
+                  <img
+                    className={style.projectImageSize}
+                    src={projectlisting.img}
+                  />
+                )}
               </div>
-              <p>{projectlisting.description}</p>
-              <ul
-                className={
-                  props.theme === 'Light'
-                    ? style.projectStack
-                    : style.projectStackDark
-                }>
-                {projectlisting.stack.map((x, index) => (
-                  <li key={index}>{x}</li>
-                ))}
-              </ul>
+
               <div
                 className={
                   props.theme === 'Light'
-                    ? style.projectLink
-                    : style.projectLinkDark
+                    ? style.projectContent
+                    : style.projectContentDark
                 }>
-                {projectlisting.github ? (
-                  <a
-                    className={style.projectButton}
-                    href={projectlisting.github}
-                    target="_blank"
-                    rel="noopener noreferrer">
-                    Github
-                  </a>
-                ) : null}
-                {projectlisting.demo ? (
-                  projectlisting.name ===
-                  'MAC AEV(Autonomous Electric Vehicle)' ? (
-                    <button
-                      className={style.projectButton}
-                      onClick={() => {
-                        console.log(projectlisting.demo)
-                        setCurrentVideo(projectlisting.demo)
-                        setShowVideo(true)
-                      }}>
-                      Demo
-                    </button>
-                  ) : (
+                <div className={style.projectHeader}>
+                  <h3>{projectlisting.name}</h3>
+                  <span className={style.projectTime}>
+                    {projectlisting.year}
+                  </span>
+                </div>
+                <p>{projectlisting.description}</p>
+                <ul
+                  className={
+                    props.theme === 'Light'
+                      ? style.projectStack
+                      : style.projectStackDark
+                  }>
+                  {projectlisting.stack.map((x, index) => (
+                    <li key={index}>{x}</li>
+                  ))}
+                </ul>
+                <div
+                  className={
+                    props.theme === 'Light'
+                      ? style.projectLink
+                      : style.projectLinkDark
+                  }>
+                  {projectlisting.github ? (
                     <a
                       className={style.projectButton}
-                      href={projectlisting.demo}
+                      href={projectlisting.github}
                       target="_blank"
                       rel="noopener noreferrer">
-                      Demo
+                      Github
                     </a>
-                  )
-                ) : null}
+                  ) : null}
+                  {projectlisting.demo ? (
+                    projectlisting.name ===
+                    'MAC AEV(Autonomous Electric Vehicle)' ? (
+                      <button
+                        className={style.projectButton}
+                        onClick={() => {
+                          console.log(projectlisting.demo)
+                          setCurrentVideo(projectlisting.demo)
+                          setShowVideo(true)
+                        }}>
+                        Demo
+                      </button>
+                    ) : (
+                      <a
+                        className={style.projectButton}
+                        href={projectlisting.demo}
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        Demo
+                      </a>
+                    )
+                  ) : null}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       {showVideo && (
