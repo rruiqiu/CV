@@ -90,7 +90,7 @@ const navbar: React.FC<navbarprops> = (props) => {
                     : style.linkStyleDark
                 }
                 href={
-                  'https://drive.google.com/file/d/1k0nkukyJFc_dywqHLxVVPFd0glEgfqN8/view?usp=sharing'
+                  'https://docs.google.com/document/d/1j9nNT3wDHvmpR8fNpB-89K5S535YI3g3ALRqTHoLcu8/edit?usp=sharing'
                 }
                 target="_blank"
                 rel="noopener noreferrer">
