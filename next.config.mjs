@@ -2,7 +2,7 @@
 const nextConfig = {
   output: 'export',
   basePath: '/CV',               // 👈 your repo name (subpath on github.io)
-  assetPrefix: '/CV/',           // 👈 ensures images, CSS, JS load from correct path
+  assetPrefix: '/',           // 👈 ensures images, CSS, JS load from correct path
   images: {
     unoptimized: true,           // 👈 required for static export
   },
