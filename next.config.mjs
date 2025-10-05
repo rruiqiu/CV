@@ -1,7 +1,7 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Only enable static exports for production builds (GitHub Pages)
-  ...(process.env.NODE_ENV === 'production' && { output: "export" }),
-
+  output: 'export',
+  // Optional: other configurations like trailingSlash, distDir, etc.
 };
 
-export default nextConfig;
+module.exports = nextConfig;
