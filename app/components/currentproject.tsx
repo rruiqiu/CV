@@ -1,5 +1,6 @@
 import projectlisting from '@/app/data/currentprojectlisting'
 import style from '@/styles/project.module.css'
+import { getImageSrc } from '@/app/data/imageImports'
 interface navbarprops {
   theme: string
   language: string
@@ -32,7 +33,7 @@ const currentProject: React.FC<navbarprops> = (props) => {
             <div className={style.projectImage}>
               <img
                 className={style.projectImageSize}
-                src={projectlisting.img}
+                src={getImageSrc(projectlisting.img)}
               />
             </div>
 

@@ -1,6 +1,7 @@
 import projectlisting from '@/app/data/projectlisting'
 import style from '@/styles/project.module.css'
 import { useState } from 'react'
+import { getImageSrc } from '@/app/data/imageImports'
 interface navbarprops {
   theme: string
   language: string
@@ -37,7 +38,7 @@ const project: React.FC<navbarprops> = (props) => {
                   'Autonomous Driving Bike - ECE Capstone Winner' ? (
                   <video
                     className={style.projectImageSize}
-                    src={projectlisting.img}
+                    src={getImageSrc(projectlisting.img)}
                     autoPlay
                     loop
                     muted
@@ -46,7 +47,7 @@ const project: React.FC<navbarprops> = (props) => {
                 ) : (
                   <img
                     className={style.projectImageSize}
-                    src={projectlisting.img}
+                    src={getImageSrc(projectlisting.img)}
                   />
                 )}
               </div>
@@ -128,7 +129,7 @@ const project: React.FC<navbarprops> = (props) => {
               ×
             </button>
             <video controls autoPlay muted className={style.videoPlayer}>
-              <source src={currentVideo} type="video/mp4" />
+              <source src={getImageSrc(currentVideo)} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
