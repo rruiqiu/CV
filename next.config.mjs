@@ -1,9 +1,7 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",  // <=== enables static exports for GitHub Pages
-  // trailingSlash: true,  // <=== ensures proper routing on GitHub Pages
-  // reactStrictMode: true,
-  // images: { unoptimized: true }
+  // Only enable static exports for production builds (GitHub Pages)
+  ...(process.env.NODE_ENV === 'production' && { output: "export" }),
+
 };
 
 export default nextConfig;
