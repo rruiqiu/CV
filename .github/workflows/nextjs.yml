@@ -1,34 +1,47 @@
-# .github/workflows/deploy.yml
 name: Deploy Next.js to GitHub Pages
 
 on:
   push:
     branches:
-      - main # Or your default branch
+      - main # your default branch
+  workflow_dispatch: # allows manual run
 
+# Required for official GitHub Pages deployments
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22' # Use a stable Node.js version
+          node-version: 20 # Node 20 is safer for Next.js (avoid 22 for now)
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Build and Export Next.js
-        run: npm run build
+      - name: Build Next.js (static export)
+        run: npm run build # produces ./out automatically (output:'export')
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact for deployment
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./out # This is the default output directory for static exports
+          path: ./out # folder containing static site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
