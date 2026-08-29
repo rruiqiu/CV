@@ -12,7 +12,7 @@ Welcome to the source code for my personal website, built with [Next.js](https:/
 - **Styling**: CSS Modules and global CSS
 - **Type Checking**: [TypeScript](https://www.typescriptlang.org/)
 - **Package Management**: [npm](https://www.npmjs.com/)
-- **Deployment**: [Vercel](https://vercel.com/)
+- **Deployment**: GitHub Pages with its global CDN
 - **Version Control**: [Git](https://git-scm.com/) & [GitHub](https://github.com/)
 
 ------
@@ -35,6 +35,9 @@ Welcome to the source code for my personal website, built with [Next.js](https:/
 |   ├── layout.tsx                	# Global layout (optional)
 |   ├── page.tsx                  	# Welcom page and entry point
 ├── public/              # Static assets (images, favicon, etc.)
+├── content/             # Portfolio project content used at build time
+├── admin/               # Local-only content manager interface
+├── tools/               # Local admin server, validation, and tests
 ├── styles/              # Global and component-specific styles
 ├── tsconfig.json        # TypeScript configuration
 ├── package.json         # Project metadata and dependencies
@@ -75,6 +78,36 @@ To preview the production static export:
 ```
 npm run build
 npm start
+```
+
+## Local project manager
+
+The project manager runs only on your computer. It is not included in the GitHub Pages export and does not require a deployed backend.
+
+1. Start the local manager:
+
+   ```
+   npm run admin
+   ```
+
+2. Open http://127.0.0.1:4173.
+3. Add, edit, reorder, or hide projects and upload project media.
+4. Choose **Save locally** to validate and write `content/projects.json`.
+5. Choose **Publish** to review the Git plan, commit only project content/media, and push to `main`. The existing GitHub Action then rebuilds the static site and deploys it to GitHub Pages.
+
+The manager accepts AVIF, JPEG, PNG, GIF, and WebP images up to 10 MB, plus MP4, WebM, and MOV videos up to 100 MB. It binds to `127.0.0.1`, uses a per-process session token, and never stores GitHub credentials.
+
+Publish only stages local media that is referenced by `content/projects.json`. Its confirmation dialog also lists existing unpushed commits and files, because those commits will be included in the same push. The `main` branch must track `origin/main`.
+
+The **View site** shortcut expects `npm run dev` to be running in a second terminal. The built-in card preview works without it.
+
+Run all local checks with:
+
+```
+npm test
+npm run lint
+npm run typecheck
+npm run build
 ```
 
 ------

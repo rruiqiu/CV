@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Portfolio Studio</title>
+    <link rel="stylesheet" href="/admin.css" />
+    <script src="/admin.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#editor">Skip to editor</a>
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">RQ</div>
+        <div>
+          <p class="eyebrow">LOCAL CONTENT WORKSPACE</p>
+          <h1>Portfolio Studio</h1>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span class="local-badge"><span aria-hidden="true"></span>127.0.0.1 only</span>
+        <a class="button button-quiet" href="http://127.0.0.1:3000/about/" target="_blank" rel="noopener noreferrer">View site</a>
+        <button class="button button-secondary" id="save-button" type="button" disabled>Save locally</button>
+        <button class="button button-primary" id="publish-button" type="button" disabled>Publish</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="project-panel" aria-labelledby="projects-heading">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">CONTENT</p>
+            <h2 id="projects-heading">Projects</h2>
+          </div>
+          <span class="count" id="project-count">—</span>
+        </div>
+        <label class="search-field">
+          <span class="sr-only">Search projects</span>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.4-4.4m2.4-5.1a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" /></svg>
+          <input id="project-search" type="search" placeholder="Search projects" autocomplete="off" />
+        </label>
+        <div class="filter-tabs" aria-label="Filter projects">
+          <button type="button" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" data-filter="current" aria-pressed="false">Current</button>
+          <button type="button" data-filter="past" aria-pressed="false">Past</button>
+        </div>
+        <div class="project-list" id="project-list">
+          <div class="loading-card">Loading project content…</div>
+        </div>
+        <button class="add-project" id="add-project" type="button" disabled><span aria-hidden="true">+</span>Add project</button>
+      </aside>
+
+      <section class="editor-panel" id="editor" aria-labelledby="editor-heading">
+        <div class="panel-heading editor-heading">
+          <div>
+            <p class="eyebrow">PROJECT DETAILS</p>
+            <h2 id="editor-heading">Select a project</h2>
+          </div>
+          <div class="editor-actions">
+            <button class="icon-button" id="move-up" type="button" aria-label="Move project up" title="Move up" disabled>↑</button>
+            <button class="icon-button" id="move-down" type="button" aria-label="Move project down" title="Move down" disabled>↓</button>
+            <button class="icon-button icon-button-danger" id="delete-project" type="button" aria-label="Delete project" title="Delete project" disabled>×</button>
+            <span class="draft-state" id="draft-state">Loading</span>
+          </div>
+        </div>
+
+        <form id="project-form">
+          <div class="form-row form-row-compact">
+            <label>
+              Section
+              <select id="section" name="section" required disabled>
+                <option value="current">Current project</option>
+                <option value="past">Past project</option>
+              </select>
+            </label>
+            <label>
+              Year
+              <input id="year" name="year" type="number" min="1990" max="2100" required disabled />
+            </label>
+            <label class="publish-field">
+              Visible on site
+              <span class="switch-row">
+                <input id="published" name="published" type="checkbox" disabled />
+                <span>Show after deploy</span>
+              </span>
+            </label>
+          </div>
+
+          <label>
+            Project name
+            <input id="name" name="name" type="text" maxlength="140" placeholder="Project name" required disabled />
+          </label>
+
+          <label>
+            Description
+            <textarea id="description" name="description" rows="7" maxlength="4000" placeholder="What did you build and why does it matter?" required disabled></textarea>
+            <span class="field-note"><span id="description-count">0</span> characters</span>
+          </label>
+
+          <label>
+            Tech stack
+            <input id="stack" name="stack" type="text" placeholder="Next.js, TypeScript, AWS" required disabled />
+            <span class="field-note">Separate tags with commas</span>
+          </label>
+
+          <div class="form-row">
+            <label>
+              GitHub URL
+              <input id="github" name="github" type="url" placeholder="https://github.com/…" disabled />
+            </label>
+            <label>
+              Demo behavior
+              <select id="demo-type" name="demoType" disabled>
+                <option value="">No demo</option>
+                <option value="external">Open external link</option>
+                <option value="video">Play video modal</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            Demo URL or file
+            <input id="demo" name="demo" type="text" maxlength="2048" placeholder="https://… or /images/demo.mp4" disabled />
+          </label>
+
+          <div class="form-row media-row">
+            <label class="media-type-field">
+              Media type
+              <select id="media-type" name="mediaType" required disabled>
+                <option value="image">Image</option>
+                <option value="video">Video</option>
+              </select>
+            </label>
+            <label>
+              Project media
+              <div class="media-field">
+                <input id="image" name="image" type="text" maxlength="2048" placeholder="/images/project.jpg" required disabled />
+                <button class="button button-secondary" id="upload-button" type="button" disabled>Upload</button>
+                <input id="file-input" type="file" accept="image/avif,image/jpeg,image/png,image/gif,image/webp,video/mp4,video/webm,video/quicktime" hidden />
+              </div>
+              <span class="field-note">AVIF, JPEG, PNG, GIF, WebP ≤ 10 MB · MP4, WebM, MOV ≤ 100 MB</span>
+            </label>
+          </div>
+
+          <label>
+            Media description (alt text)
+            <input id="alt" name="alt" type="text" maxlength="240" placeholder="Describe what the media shows" required disabled />
+          </label>
+        </form>
+        <div class="status-row">
+          <p class="status-message" id="status-message" role="status" aria-live="polite"></p>
+          <button class="button button-quiet status-action" id="reload-button" type="button" hidden>Reload from disk</button>
+        </div>
+      </section>
+
+      <aside class="preview-panel" aria-labelledby="preview-heading">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">LIVE CARD</p>
+            <h2 id="preview-heading">Preview</h2>
+          </div>
+          <span class="viewport-label">Desktop</span>
+        </div>
+        <div class="preview-stage">
+          <article class="preview-card" id="preview-card">
+            <div class="preview-media" id="preview-media">
+              <span>Select a project to preview</span>
+            </div>
+            <div class="preview-content">
+              <div class="preview-title-row">
+                <h3 id="preview-name">Project name</h3>
+                <em id="preview-year">Year</em>
+              </div>
+              <p id="preview-description">Project description will appear here.</p>
+              <ul id="preview-stack"></ul>
+              <div class="preview-links" id="preview-links"></div>
+            </div>
+          </article>
+        </div>
+        <div class="preview-note">
+          <span aria-hidden="true">↗</span>
+          <p><strong>Static by design.</strong> Published content is built into the site for a fast first load on GitHub Pages.</p>
+        </div>
+      </aside>
+    </main>
+
+    <dialog class="dialog" id="delete-dialog" aria-labelledby="delete-title">
+      <div class="dialog-body">
+        <p class="eyebrow">CONFIRM DELETE</p>
+        <h2 id="delete-title">Remove this project?</h2>
+        <p id="delete-copy">The project will be removed from the local draft. Save locally to write the change.</p>
+        <div class="dialog-actions">
+          <button class="button button-secondary" id="cancel-delete" type="button">Cancel</button>
+          <button class="button button-danger" id="confirm-delete" type="button">Remove project</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="dialog" id="publish-dialog" aria-labelledby="publish-title">
+      <div class="dialog-body">
+        <p class="eyebrow">GITHUB PUBLISH PLAN</p>
+        <h2 id="publish-title">Publish portfolio content?</h2>
+        <p id="publish-summary" role="status" aria-live="polite">Checking the repository…</p>
+        <ul class="publish-details" id="publish-details"></ul>
+        <p class="dialog-warning" id="publish-warning" hidden></p>
+        <div class="dialog-actions">
+          <button class="button button-secondary" id="cancel-publish" type="button">Cancel</button>
+          <button class="button button-primary" id="confirm-publish" type="button">Commit &amp; push</button>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>

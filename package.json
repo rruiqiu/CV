@@ -6,10 +6,12 @@
     "node": ">=24"
   },
   "scripts": {
+    "admin": "node tools/admin-server.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "serve out",
     "lint": "eslint .",
+    "test": "node --test tools/*.test.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
