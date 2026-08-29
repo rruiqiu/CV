@@ -1,5 +1,3 @@
-import { getImageSrc } from './imageImports'
-
 const projectlisting = [
   {
     id: 1,

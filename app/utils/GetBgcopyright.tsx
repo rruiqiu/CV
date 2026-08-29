@@ -2,7 +2,7 @@
 import styles from '@/styles/IntroBg.module.css'
 import { useEffect, useState } from 'react'
 
-const getCopyRight = () => {
+const GetCopyright = () => {
   const [data, setData] = useState('')
 
   useEffect(() => {
@@ -31,4 +31,4 @@ const getCopyRight = () => {
     </>
   )
 }
-export default getCopyRight
+export default GetCopyright

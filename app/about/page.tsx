@@ -1,13 +1,11 @@
 'use client'
 import style from '@/styles/about.module.css'
 import NavBar from '@/app/components/navbar'
-import Skills from '@/app/components/skill'
 import { useState, useEffect } from 'react'
 import About from '@/app/components/about'
 import Project from '@/app/components/project'
 import CurrentProject from '@/app/components/currentproject'
 import Footer from '@/app/components/footer'
-import { log } from 'node:console'
 import currentprojectlisting from '@/app/data/currentprojectlisting'
 
 const AboutPage = () => {
@@ -16,26 +14,31 @@ const AboutPage = () => {
 
   useEffect(() => {
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    setTheme(darkModeQuery.matches ? 'Dark' : 'Light')
-    // console.log(darkModeQuery)
+    const syncTheme = () => {
+      setTheme(darkModeQuery.matches ? 'Dark' : 'Light')
+    }
+    const syncTimer = window.setTimeout(syncTheme, 0)
 
     // Listener for theme changes
-    const handleChange = (e: any) => setTheme(e.matches ? 'Dark' : 'Light')
+    const handleChange = (event: MediaQueryListEvent) => {
+      setTheme(event.matches ? 'Dark' : 'Light')
+    }
     darkModeQuery.addEventListener('change', handleChange)
 
-    return () => darkModeQuery.removeEventListener('change', handleChange)
+    return () => {
+      window.clearTimeout(syncTimer)
+      darkModeQuery.removeEventListener('change', handleChange)
+    }
   }, [])
 
   // Callback function to update theme
   const updateTheme = (newTheme: string) => {
     setTheme(newTheme)
-    console.log(theme)
   }
 
   // Callback function to update language
   const updateLanguage = (newLanguage: string) => {
     setLanguage(newLanguage)
-    console.log(language)
   }
 
   return (

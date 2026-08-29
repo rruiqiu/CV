@@ -1,6 +1,5 @@
 import style from '@/styles/navbar.module.css'
 import Link from 'next/link'
-import { RiTranslate } from 'react-icons/ri'
 import { CgDarkMode } from 'react-icons/cg'
 
 interface navbarprops {
@@ -14,11 +13,6 @@ const navbar: React.FC<navbarprops> = (props) => {
   const handleThemeChange = () => {
     const newTheme = props.darkmode === 'Light' ? 'Dark' : 'Light'
     props.onUpdateTheme(newTheme)
-  }
-
-  const handleLanguageChange = () => {
-    const newLanguage = props.language === 'En' ? 'CN' : 'En'
-    props.onUpdateLanguage(newLanguage)
   }
 
   return (
@@ -90,7 +84,7 @@ const navbar: React.FC<navbarprops> = (props) => {
                     : style.linkStyleDark
                 }
                 href={
-                  'https://docs.google.com/document/d/1j9nNT3wDHvmpR8fNpB-89K5S535YI3g3ALRqTHoLcu8/edit?usp=sharing'
+                  'https://drive.google.com/file/d/1Lb9H5k3H7RmzQhuHzXHhKdEGrurhTkdE/view?usp=drive_link'
                 }
                 target="_blank"
                 rel="noopener noreferrer">

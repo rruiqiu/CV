@@ -3,6 +3,13 @@
 import styles from '@/styles/IntroBg.module.css'
 import Link from 'next/link'
 
+interface BingWallpaperResponse {
+  images: Array<{
+    url: string
+    copyright: string
+  }>
+}
+
 //also add another function to allow user auto pick a random wallpaper from 0-7
 const Bg = async () => {
   // const url = await Promise.all([BGData])
@@ -12,8 +19,6 @@ const Bg = async () => {
     const requestOptions: RequestInit = {
       method: 'GET',
       redirect: 'follow',
-      // cache: 'no-store',
-      next: { revalidate: 3600 },
     }
     //'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA'
     //yeah this api won't work in production
@@ -25,12 +30,11 @@ const Bg = async () => {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`)
     }
-    const data = await response.json()
-    console.log(data)
+    const data = (await response.json()) as BingWallpaperResponse
     return data
   }
 
-  const BGData: any = await fetchData()
+  const BGData = await fetchData()
   const ImageLink = 'https://www.bing.com/' + BGData.images[0].url
   const copyright = BGData.images[0].copyright
   return (

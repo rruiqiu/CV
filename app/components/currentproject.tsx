@@ -31,9 +31,11 @@ const currentProject: React.FC<navbarprops> = (props) => {
         {projectlisting.map((projectlisting) => (
           <div key={projectlisting.id} className={style.project}>
             <div className={style.projectImage}>
+              {/* eslint-disable-next-line @next/next/no-img-element -- Project sources can be local or external. */}
               <img
                 className={style.projectImageSize}
                 src={getImageSrc(projectlisting.img)}
+                alt={projectlisting.name}
               />
             </div>
 

@@ -2,7 +2,6 @@
 import styles from '@/styles/IntroBg.module.css'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { json } from 'stream/consumers'
 
 //add random function that will allow the user to choose a random image.
 //also exploring the cache ability that can reduce the refetching request
@@ -12,6 +11,11 @@ interface data {
   copyright: string | null
 }
 
+interface BingWallpaperData {
+  url: string
+  copyright: string
+}
+
 const Bg = () => {
   const [data, setData] = useState<data>({
     ImageLink: '',
@@ -19,39 +23,35 @@ const Bg = () => {
   })
 
   useEffect(() => {
-    GetData()
+    const getData = async () => {
+      const requestOptions: RequestInit = {
+        method: 'GET',
+        redirect: 'follow',
+      }
+      try {
+        const response = await fetch(
+          'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
+          requestOptions
+        )
+        if (response.ok) {
+          const jsonData = (await response.json()) as BingWallpaperData
+          const { url, copyright } = jsonData
+
+          setData({
+            ImageLink: url,
+            copyright,
+          })
+          localStorage.setItem('ImageLink', url)
+          localStorage.setItem('copyright', copyright)
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    void getData()
   }, [])
 
-  const GetData = async () => {
-    const requestOptions: RequestInit = {
-      method: 'GET',
-      redirect: 'follow',
-    }
-    try {
-      const response = await fetch(
-        'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
-        requestOptions
-      )
-      if (response.ok) {
-        const jsonData = await response.json()
-        const url = jsonData.url
-        const copyright = jsonData.copyright
-
-        // if (localStorage.getItem('ImageLink') !== url && localStorage.getItem('copyright') !== copyright) {
-        setData({
-          ImageLink: url,
-          copyright: copyright,
-        })
-        localStorage.setItem('ImageLink', url)
-        localStorage.setItem('copyright', copyright)
-        // }
-
-        console.log(jsonData)
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    }
-  }
   return (
     <>
       <div

@@ -1,6 +1,6 @@
 # My Personal Website
 
-Welcome to the source code for my personal website, built with [Next.js](https://nextjs.org/) and [Tailwind CSS](https://tailwindcss.com/). This site serves as my digital CV and portfolio, highlighting my projects, technical skills, and professional experiences.
+Welcome to the source code for my personal website, built with [Next.js](https://nextjs.org/) and CSS Modules. This site serves as my digital CV and portfolio, highlighting my projects, technical skills, and professional experiences.
 
 🔗 **Live Site**: [www.richardqiu.me](https://www.richardqiu.me)
 
@@ -9,7 +9,7 @@ Welcome to the source code for my personal website, built with [Next.js](https:/
 ## 🧰 Tech Stack
 
 - **Framework**: [Next.js](https://nextjs.org/) (App Router)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Styling**: CSS Modules and global CSS
 - **Type Checking**: [TypeScript](https://www.typescriptlang.org/)
 - **Package Management**: [npm](https://www.npmjs.com/)
 - **Deployment**: [Vercel](https://vercel.com/)
@@ -36,7 +36,6 @@ Welcome to the source code for my personal website, built with [Next.js](https:/
 |   ├── page.tsx                  	# Welcom page and entry point
 ├── public/              # Static assets (images, favicon, etc.)
 ├── styles/              # Global and component-specific styles
-├── tailwind.config.ts   # Tailwind CSS configuration
 ├── tsconfig.json        # TypeScript configuration
 ├── package.json         # Project metadata and dependencies
 └── ...
@@ -45,6 +44,8 @@ Welcome to the source code for my personal website, built with [Next.js](https:/
 ------
 
 ## 🚀 Getting Started
+
+Requires Node.js 24 or newer.
 
 To run this project locally:
 
@@ -68,6 +69,13 @@ To run this project locally:
    ```
 
 4. Open http://localhost:3000 in your browser to view the site.
+
+To preview the production static export:
+
+```
+npm run build
+npm start
+```
 
 ------
 

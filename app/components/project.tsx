@@ -6,7 +6,7 @@ interface navbarprops {
   theme: string
   language: string
 }
-const project: React.FC<navbarprops> = (props) => {
+const Project: React.FC<navbarprops> = (props) => {
   const [showVideo, setShowVideo] = useState(false)
   const [currentVideo, setCurrentVideo] = useState('')
   return (
@@ -45,9 +45,12 @@ const project: React.FC<navbarprops> = (props) => {
                     playsInline
                   />
                 ) : (
+                  // Project images can be either local files or arbitrary external URLs.
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     className={style.projectImageSize}
                     src={getImageSrc(projectlisting.img)}
+                    alt={projectlisting.name}
                   />
                 )}
               </div>
@@ -139,4 +142,4 @@ const project: React.FC<navbarprops> = (props) => {
   )
 }
 
-export default project
+export default Project

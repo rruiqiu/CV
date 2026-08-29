@@ -3,7 +3,6 @@ import { IoMdHome } from 'react-icons/io'
 import { FaGithub } from 'react-icons/fa'
 import { FaLinkedin } from 'react-icons/fa'
 import { IoDocumentTextOutline } from 'react-icons/io5'
-import { SiLeetcode } from 'react-icons/si'
 import Link from 'next/link'
 interface navbarprops {
   theme: string
@@ -53,7 +52,7 @@ const footer: React.FC<navbarprops> = (props) => {
           </Link> */}
           <Link
             href={
-              'https://drive.google.com/file/d/1k0nkukyJFc_dywqHLxVVPFd0glEgfqN8/view?usp=sharing'
+              'https://drive.google.com/file/d/1Lb9H5k3H7RmzQhuHzXHhKdEGrurhTkdE/view?usp=drive_link'
             }
             target="_blank"
             rel="noopener noreferrer">

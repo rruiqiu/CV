@@ -24,6 +24,8 @@ export const imageImports = {
   '/images/comingsoon.jpg': comingsoon,
 }
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? ''
+
 // Helper function to get the correct image import
 export const getImageSrc = (imagePath: string): string => {
   // If it's an external URL, return as is
@@ -32,11 +34,8 @@ export const getImageSrc = (imagePath: string): string => {
   }
 
   // For video files, they need to be served from the public directory
-  // Since basePath is set to '/CV', videos need the basePath prefix
   if (imagePath.endsWith('.mp4') || imagePath.endsWith('.mov')) {
-    // Videos are served from the public directory with basePath
-    // Both development and production: /CV/images/video.mp4
-    return `/CV${imagePath}`
+    return `${basePath}${imagePath}`
   }
 
   // If it's a local static image path, return the imported image src
@@ -46,5 +45,5 @@ export const getImageSrc = (imagePath: string): string => {
   }
 
   // Fallback to the original path with base path
-  return `/CV${imagePath}`
+  return `${basePath}${imagePath}`
 }

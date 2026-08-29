@@ -1,14 +1,14 @@
 /** @type {import('next').NextConfig} */
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
+
 const nextConfig = {
   output: 'export',
-  basePath: process.env.NODE_ENV === 'production' ? '/CV' : '', // 👈 your repo name (subpath on github.io)
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/CV/' : '', // 👈 ensures images, CSS, JS load from correct path
-  // basePath: '/CV',               // 👈 your repo name (subpath on github.io)
-  // assetPrefix: '/CV/',
+  basePath,
+  assetPrefix: basePath ? `${basePath}/` : '',
   images: {
-    unoptimized: true,           // 👈 required for static export
+    unoptimized: true,
   },
-  trailingSlash: true,           // 👈 ensures every route exports as /index.html
+  trailingSlash: true,
 };
 
 export default nextConfig;
