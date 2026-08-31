@@ -92,7 +92,7 @@ const about: React.FC<navbarprops> = (props) => {
                   style={{
                     marginTop: '0px',
                   }}>
-                  Hi, I'm Richard — welcome to my website!
+                  Hi, I'm Richard — a software engineer based in Toronto.
                 </p>
                 <p
                   className={
@@ -101,13 +101,15 @@ const about: React.FC<navbarprops> = (props) => {
                   style={{
                     marginTop: '0px',
                   }}>
-                  I recently graduated from McMaster University with a degree in
-                  Electrical and Computer Engineering. I have experience across
-                  several domains, including Full-Stack Development, Systems
-                  Programming, Manufacturing Automation, and Machine Learning.
-                  I'm passionate about building innovative solutions that
-                  improve the way we live and work. Check out my past projects
-                  below — and let's connect!
+                  I build infrastructure and applications that make software
+                  delivery and real-world operations more reliable. At ArcTrade,
+                  I work on CI/CD and platform tooling for 300+ AWS-hosted
+                  microservices. Previously at Veoneer, I built manufacturing and
+                  warehouse software, including a system that reduced order cycle
+                  time by 70%. I graduated from McMaster University with a B.Eng.
+                  in Electrical Engineering and will begin Georgia Tech's
+                  part-time OMSCS in 2027, focusing on computing systems and
+                  machine learning.
                 </p>
               </>
             ) : (
@@ -118,7 +120,7 @@ const about: React.FC<navbarprops> = (props) => {
                 style={{
                   marginTop: '0px',
                 }}>
-                你好，我是邱瑞——欢迎来到我的个人主页！我现在是麦克马斯特大学的最后一年，我的研究重点是计算系统、高性能计算、计算机体系结构、操作系统、机器学习和现代网络技术。作为一名有抱负的工程师，我致力于运用我的技能和知识来开发创新的解决方案，以改善人们的日常生活。我对创造积极变革的热情使我不断接触最新技术，目标是对社会产生有意义的影响。
+                你好，我是邱瑞，一名在多伦多工作的软件工程师。我专注于构建让软件交付和实际运营更加可靠的基础设施与应用。目前在 ArcTrade，我负责支持 300+ 个 AWS 微服务的 CI/CD 与平台工具；此前在 Veoneer，我开发过制造业和仓储软件，其中一套系统将订单周期缩短了 70%。我毕业于麦克马斯特大学电气工程专业，并将在 2027 年开始佐治亚理工学院的非全日制 OMSCS，计划专注于计算系统与机器学习。
               </p>
             )}
 

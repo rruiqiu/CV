@@ -33,23 +33,38 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  width: 100%;
   margin-top: 30px;
 }
 
 .projectImage {
+  flex: 0 0 auto;
   margin-right: 30px;
 }
 
 .projectImageSize {
-  height: 200px;
-  width: 300px;
-  object-fit: fill;
+  width: clamp(300px, 30vw, 320px);
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
   border-radius: 8px;
   display: block;
   margin: auto;
 }
 
+.projectMotionPreview {
+  cursor: pointer;
+}
+
+.projectMotionPreview:focus-visible {
+  outline: 3px solid rgb(255 115 0 / 55%);
+  outline-offset: 3px;
+}
+
 .projectContent {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-width: 0;
   border-radius: 15px;
   background-color: rgb(173 207 240 / 35%);
   text-align: left;
@@ -59,6 +74,9 @@
   font-family: 'Quicksand', sans-serif;
 }
 .projectContentDark {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-width: 0;
   border-radius: 15px;
   background-color: rgb(255 255 255 / 19%);
   text-align: left;
@@ -173,6 +191,115 @@
   font-family: 'Quicksand', sans-serif;
 }
 
+.projectBrowser {
+  width: min(1020px, calc(100vw - 48px));
+  max-width: none;
+  margin-top: 22px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.projectList {
+  width: 100%;
+  max-width: 900px;
+}
+
+.projectViewport,
+.projectViewportDark {
+  --project-viewport-height: clamp(680px, 84svh, 900px);
+
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--project-viewport-height);
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-radius: 12px;
+  scrollbar-color: rgba(89, 99, 110, 0.38) transparent;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.projectViewport {
+  background-color: rgb(255 255 255 / 20%);
+  box-shadow: inset 0 0 0 1px rgb(31 42 54 / 8%);
+  scrollbar-color: rgba(45, 57, 69, 0.4) transparent;
+}
+
+.projectViewportDark {
+  background-color: rgb(255 255 255 / 1.5%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 6%);
+  scrollbar-color: rgba(255, 255, 255, 0.28) transparent;
+}
+
+.projectViewport::-webkit-scrollbar,
+.projectViewportDark::-webkit-scrollbar {
+  width: 10px;
+}
+
+.projectViewport::-webkit-scrollbar-track,
+.projectViewportDark::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.projectViewport::-webkit-scrollbar-thumb,
+.projectViewportDark::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+.projectViewport::-webkit-scrollbar-thumb {
+  background-color: rgba(45, 57, 69, 0.4);
+}
+
+.projectViewportDark::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.28);
+}
+
+.projectViewport:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(45, 57, 69, 0.58);
+}
+
+.projectViewportDark:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.42);
+}
+
+.projectViewport::-webkit-scrollbar-button,
+.projectViewportDark::-webkit-scrollbar-button {
+  display: none;
+}
+
+.projectViewport:focus-visible,
+.projectViewportDark:focus-visible {
+  outline: 3px solid rgb(255 115 0 / 42%);
+  outline-offset: 3px;
+}
+
+.projectScrollList {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 24px 20px 36px;
+}
+
+.projectScrollList .project {
+  margin-top: 0;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -222,6 +349,27 @@
 }
 
 @media (max-width: 700px) {
+  .projectBrowser {
+    width: calc(100vw - 24px);
+    margin-top: 12px;
+  }
+
+  .projectViewport,
+  .projectViewportDark {
+    --project-viewport-height: min(80svh, 720px);
+  }
+
+  .projectScrollList {
+    gap: 20px;
+    padding: 12px 10px 24px;
+  }
+
+  .projectScrollList .projectImageSize,
+  .projectScrollList .projectContent,
+  .projectScrollList .projectContentDark {
+    width: 100%;
+  }
+
   .project {
     flex-direction: column;
     align-items: stretch;
