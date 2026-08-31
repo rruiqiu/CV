@@ -12,7 +12,7 @@
     "start": "serve out",
     "lint": "eslint .",
     "test": "node --test tools/*.test.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
     "next": "^16.3.3",
