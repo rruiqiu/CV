@@ -31,7 +31,7 @@
       "alt": "Personal portfolio website preview",
       "name": "Personal Website",
       "year": 2024,
-      "description": "Designed and built this personal portfolio with Next.js and TypeScript. The site is statically exported and deployed to GitHub Pages through GitHub Actions, with CDN-cached assets for fast delivery and no production backend. Project content is maintained through a lightweight local admin workflow, making updates simple without sacrificing page performance.",
+      "description": "Built with Next.js and TypeScript, this portfolio is statically deployed to GitHub Pages through GitHub Actions. CDN-cached assets keep it fast, while a lightweight local admin tool makes project updates simple without a production backend.",
       "stack": [
         "Next.js",
         "TypeScript",
