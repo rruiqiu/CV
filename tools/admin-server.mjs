@@ -268,7 +268,7 @@ async function saveProjects(req) {
 
   const current = await readContentSnapshot(projectsFile)
   if (ifMatch !== current.etag) {
-    throw new HttpError(409, 'Projects changed on disk. Reload before saving again.', {
+    throw new HttpError(409, 'Portfolio content changed on disk. Reload before saving again.', {
       code: 'etag_conflict',
       currentEtag: current.etag,
     })
@@ -511,7 +511,7 @@ async function publishProjects(expectedPlanId) {
         'commit',
         '--only',
         '-m',
-        'content: update portfolio projects',
+        'content: update portfolio',
         '--',
         ...initialPlan.publishPaths,
       ])

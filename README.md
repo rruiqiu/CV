@@ -35,7 +35,7 @@ Welcome to the source code for my personal website, built with [Next.js](https:/
 |   ├── layout.tsx                	# Global layout (optional)
 |   ├── page.tsx                  	# Welcom page and entry point
 ├── public/              # Static assets (images, favicon, etc.)
-├── content/             # Portfolio project content used at build time
+├── content/             # Portfolio introduction and project content used at build time
 ├── admin/               # Local-only content manager interface
 ├── tools/               # Local admin server, validation, and tests
 ├── styles/              # Global and component-specific styles
@@ -91,9 +91,9 @@ The project manager runs only on your computer. It is not included in the GitHub
    ```
 
 2. Open http://127.0.0.1:4173.
-3. Add, edit, reorder, or hide projects and upload project media.
+3. Edit the bilingual introduction, or add, edit, reorder, and hide projects and upload project media.
 4. Choose **Save locally** to validate and write `content/projects.json`.
-5. Choose **Publish** to review the Git plan, commit only project content/media, and push to `main`. The existing GitHub Action then rebuilds the static site and deploys it to GitHub Pages.
+5. Choose **Publish** to review the Git plan, commit only portfolio content/media, and push to `main`. The existing GitHub Action then rebuilds the static site and deploys it to GitHub Pages.
 
 The manager accepts AVIF, JPEG, PNG, GIF, and WebP images up to 10 MB, plus MP4, WebM, and MOV videos up to 100 MB. It binds to `127.0.0.1`, uses a per-process session token, and never stores GitHub credentials.
 

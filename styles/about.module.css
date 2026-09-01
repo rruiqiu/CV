@@ -68,12 +68,14 @@
   /* text-align: justify; */
   font-weight: 500;
   margin: 12px 0;
+  white-space: pre-wrap;
 }
 
 .pstyleDark {
   color: white;
   font-size: 1.2rem;
   font-family: 'Quicksand', sans-serif;
+  white-space: pre-wrap;
   /* text-align: justify; */
   font-weight: 500;
   margin: 12px 0;

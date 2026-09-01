@@ -17,9 +17,12 @@ const projectKeys = new Set([
   'year',
 ])
 
+const introductionKeys = new Set(['en', 'zh'])
+const introductionLocaleKeys = new Set(['body', 'headline'])
+
 export class ContentValidationError extends Error {
   constructor(issues) {
-    super('Project content is invalid.')
+    super('Portfolio content is invalid.')
     this.name = 'ContentValidationError'
     this.issues = issues
   }
@@ -83,6 +86,42 @@ function validateExternalUrl(value, path, issues) {
     addIssue(issues, path, 'Must be an http(s) URL.')
   }
   return normalized
+}
+
+function validateIntroductionLocale(value, locale, issues) {
+  const path = `introduction.${locale}`
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    addIssue(issues, path, 'Must be an object.')
+    return { headline: '', body: '' }
+  }
+
+  for (const key of Object.keys(value)) {
+    if (!introductionLocaleKeys.has(key)) addIssue(issues, `${path}.${key}`, 'Unknown field.')
+  }
+
+  return {
+    headline: requiredString(value.headline, `${path}.headline`, issues, 240),
+    body: requiredString(value.body, `${path}.body`, issues, 4000),
+  }
+}
+
+function validateIntroduction(value, issues) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    addIssue(issues, 'introduction', 'Must be an object.')
+    return {
+      en: { headline: '', body: '' },
+      zh: { headline: '', body: '' },
+    }
+  }
+
+  for (const key of Object.keys(value)) {
+    if (!introductionKeys.has(key)) addIssue(issues, `introduction.${key}`, 'Unknown field.')
+  }
+
+  return {
+    en: validateIntroductionLocale(value.en, 'en', issues),
+    zh: validateIntroductionLocale(value.zh, 'zh', issues),
+  }
 }
 
 function validateProject(value, index, issues) {
@@ -185,10 +224,13 @@ export function validateContent(value) {
   }
 
   for (const key of Object.keys(value)) {
-    if (key !== 'version' && key !== 'projects') addIssue(issues, key, 'Unknown field.')
+    if (key !== 'version' && key !== 'introduction' && key !== 'projects') {
+      addIssue(issues, key, 'Unknown field.')
+    }
   }
 
-  if (value.version !== 1) addIssue(issues, 'version', 'Must be 1.')
+  if (value.version !== 2) addIssue(issues, 'version', 'Must be 2.')
+  const introduction = validateIntroduction(value.introduction, issues)
   if (!Array.isArray(value.projects) || value.projects.length > 100) {
     addIssue(issues, 'projects', 'Must be an array with no more than 100 projects.')
   }
@@ -203,7 +245,7 @@ export function validateContent(value) {
   }
 
   if (issues.length) throw new ContentValidationError(issues)
-  return { version: 1, projects }
+  return { version: 2, introduction, projects }
 }
 
 export function serializeContent(content) {

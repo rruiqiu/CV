@@ -1,5 +1,14 @@
 const state = {
-  content: { version: 1, projects: [] },
+  content: {
+    version: 2,
+    introduction: {
+      en: { headline: '', body: '' },
+      zh: { headline: '', body: '' },
+    },
+    projects: [],
+  },
+  activeView: 'introduction',
+  previewLanguage: 'en',
   selectedId: null,
   filter: 'all',
   etag: null,
@@ -27,10 +36,23 @@ const elements = {
   description: document.querySelector('#description'),
   descriptionCount: document.querySelector('#description-count'),
   draftState: document.querySelector('#draft-state'),
+  editorEyebrow: document.querySelector('#editor-eyebrow'),
   editorHeading: document.querySelector('#editor-heading'),
   fileInput: document.querySelector('#file-input'),
   filterButtons: [...document.querySelectorAll('[data-filter]')],
-  form: document.querySelector('#project-form'),
+  introductionEnBody: document.querySelector('#introduction-en-body'),
+  introductionEnBodyCount: document.querySelector('#introduction-en-body-count'),
+  introductionEnHeadline: document.querySelector('#introduction-en-headline'),
+  introductionEnHeadlineCount: document.querySelector('#introduction-en-headline-count'),
+  introductionEntry: document.querySelector('#introduction-entry'),
+  introductionForm: document.querySelector('#introduction-form'),
+  introductionPreviewBody: document.querySelector('#introduction-preview-body'),
+  introductionPreviewCard: document.querySelector('#introduction-preview-card'),
+  introductionPreviewHeadline: document.querySelector('#introduction-preview-headline'),
+  introductionZhBody: document.querySelector('#introduction-zh-body'),
+  introductionZhBodyCount: document.querySelector('#introduction-zh-body-count'),
+  introductionZhHeadline: document.querySelector('#introduction-zh-headline'),
+  introductionZhHeadlineCount: document.querySelector('#introduction-zh-headline-count'),
   github: document.querySelector('#github'),
   image: document.querySelector('#image'),
   list: document.querySelector('#project-list'),
@@ -39,6 +61,9 @@ const elements = {
   moveUp: document.querySelector('#move-up'),
   name: document.querySelector('#name'),
   previewDescription: document.querySelector('#preview-description'),
+  previewEyebrow: document.querySelector('#preview-eyebrow'),
+  previewLanguage: document.querySelector('#preview-language'),
+  previewLanguageButtons: [...document.querySelectorAll('[data-preview-language]')],
   previewLinks: document.querySelector('#preview-links'),
   previewMedia: document.querySelector('#preview-media'),
   previewName: document.querySelector('#preview-name'),
@@ -50,6 +75,9 @@ const elements = {
   publishSummary: document.querySelector('#publish-summary'),
   publishWarning: document.querySelector('#publish-warning'),
   published: document.querySelector('#published'),
+  projectActions: document.querySelector('#project-actions'),
+  projectForm: document.querySelector('#project-form'),
+  projectPreviewCard: document.querySelector('#preview-card'),
   reload: document.querySelector('#reload-button'),
   save: document.querySelector('#save-button'),
   search: document.querySelector('#project-search'),
@@ -60,7 +88,7 @@ const elements = {
   year: document.querySelector('#year'),
 }
 
-const editableFields = [
+const projectEditableFields = [
   elements.section,
   elements.published,
   elements.year,
@@ -73,6 +101,13 @@ const editableFields = [
   elements.mediaType,
   elements.image,
   elements.alt,
+]
+
+const introductionEditableFields = [
+  elements.introductionEnHeadline,
+  elements.introductionEnBody,
+  elements.introductionZhHeadline,
+  elements.introductionZhBody,
 ]
 
 function selectedProject() {
@@ -108,18 +143,23 @@ function sectionProjects(project) {
 
 function updateControls() {
   const project = selectedProject()
-  const enabled = state.loaded && Boolean(project) && !state.busy && !state.conflicted
-  for (const field of editableFields) field.disabled = !enabled
+  const baseEnabled = state.loaded && !state.busy && !state.conflicted
+  const projectEnabled = baseEnabled && state.activeView === 'project' && Boolean(project)
+  const introductionEnabled = baseEnabled && state.activeView === 'introduction'
+  for (const field of projectEditableFields) field.disabled = !projectEnabled
+  for (const field of introductionEditableFields) field.disabled = !introductionEnabled
+  elements.introductionEntry.disabled = !state.loaded || state.busy
   elements.add.disabled = !state.loaded || state.busy
-  elements.delete.disabled = !enabled
-  elements.upload.disabled = !enabled
+  elements.delete.disabled = !projectEnabled
+  elements.upload.disabled = !projectEnabled
   elements.save.disabled = !state.loaded || state.busy || state.conflicted || !state.dirty
   elements.publish.disabled = !state.loaded || state.busy || state.conflicted
+  elements.projectActions.hidden = state.activeView !== 'project'
 
   const siblings = project ? sectionProjects(project) : []
   const siblingIndex = project ? siblings.findIndex((candidate) => candidate.id === project.id) : -1
-  elements.moveUp.disabled = !enabled || siblingIndex <= 0
-  elements.moveDown.disabled = !enabled || siblingIndex < 0 || siblingIndex >= siblings.length - 1
+  elements.moveUp.disabled = !projectEnabled || siblingIndex <= 0
+  elements.moveDown.disabled = !projectEnabled || siblingIndex < 0 || siblingIndex >= siblings.length - 1
 }
 
 function isVideoPath(path) {
@@ -156,6 +196,7 @@ function mediaElement(path, title, mediaType, { play = false } = {}) {
 function renderList() {
   const visibleProjects = filteredProjects()
 
+  elements.introductionEntry.setAttribute('aria-current', state.activeView === 'introduction' ? 'page' : 'false')
   elements.count.textContent = String(state.content.projects.length)
   elements.list.replaceChildren()
 
@@ -171,7 +212,10 @@ function renderList() {
     const button = document.createElement('button')
     button.type = 'button'
     button.dataset.projectId = project.id
-    button.setAttribute('aria-current', String(project.id === state.selectedId))
+    button.setAttribute(
+      'aria-current',
+      String(state.activeView === 'project' && project.id === state.selectedId),
+    )
 
     const thumb = document.createElement('span')
     thumb.className = 'list-thumb'
@@ -205,6 +249,42 @@ function filteredProjects() {
   })
 }
 
+function renderIntroductionPreview() {
+  const copy = state.content.introduction[state.previewLanguage]
+  elements.introductionPreviewCard.lang = state.previewLanguage === 'zh' ? 'zh-CN' : 'en'
+  elements.introductionPreviewHeadline.textContent =
+    copy.headline || 'Introduction opening line'
+  elements.introductionPreviewBody.textContent =
+    copy.body || 'Introduction paragraph will appear here.'
+
+  for (const button of elements.previewLanguageButtons) {
+    button.setAttribute(
+      'aria-pressed',
+      String(button.dataset.previewLanguage === state.previewLanguage),
+    )
+  }
+}
+
+function renderIntroductionEditor() {
+  const introduction = state.content.introduction
+  elements.editorEyebrow.textContent = 'INTRODUCTION'
+  elements.editorHeading.textContent = 'Profile introduction'
+  elements.introductionForm.hidden = false
+  elements.projectForm.hidden = true
+  elements.introductionPreviewCard.hidden = false
+  elements.projectPreviewCard.hidden = true
+  elements.previewLanguage.hidden = false
+  elements.previewEyebrow.textContent = 'LIVE INTRO'
+
+  elements.introductionEnHeadline.value = introduction.en.headline
+  elements.introductionEnBody.value = introduction.en.body
+  elements.introductionZhHeadline.value = introduction.zh.headline
+  elements.introductionZhBody.value = introduction.zh.body
+  updateIntroductionCounts()
+  renderIntroductionPreview()
+  updateControls()
+}
+
 function renderPreview(project) {
   elements.previewMedia.replaceChildren(
     mediaElement(project.image, project.alt || project.name, project.mediaType, { play: true }),
@@ -230,8 +310,15 @@ function renderPreview(project) {
 }
 
 function renderEmptyEditor() {
+  elements.editorEyebrow.textContent = 'PROJECT DETAILS'
   elements.editorHeading.textContent = 'No project selected'
-  for (const field of editableFields) {
+  elements.introductionForm.hidden = true
+  elements.projectForm.hidden = false
+  elements.introductionPreviewCard.hidden = true
+  elements.projectPreviewCard.hidden = false
+  elements.previewLanguage.hidden = true
+  elements.previewEyebrow.textContent = 'LIVE CARD'
+  for (const field of projectEditableFields) {
     if (field.type === 'checkbox') field.checked = false
     else field.value = ''
   }
@@ -246,13 +333,25 @@ function renderEmptyEditor() {
 }
 
 function renderEditor() {
+  if (state.activeView === 'introduction') {
+    renderIntroductionEditor()
+    return
+  }
+
   const project = selectedProject()
   if (!project) {
     renderEmptyEditor()
     return
   }
 
+  elements.editorEyebrow.textContent = 'PROJECT DETAILS'
   elements.editorHeading.textContent = project.name
+  elements.introductionForm.hidden = true
+  elements.projectForm.hidden = false
+  elements.introductionPreviewCard.hidden = true
+  elements.projectPreviewCard.hidden = false
+  elements.previewLanguage.hidden = true
+  elements.previewEyebrow.textContent = 'LIVE CARD'
   elements.section.value = project.section
   elements.published.checked = project.published
   elements.year.value = String(project.year)
@@ -270,10 +369,38 @@ function renderEditor() {
   updateControls()
 }
 
+function selectIntroduction() {
+  state.activeView = 'introduction'
+  renderList()
+  renderEditor()
+}
+
 function selectProject(projectId) {
+  state.activeView = 'project'
   state.selectedId = projectId
   renderList()
   renderEditor()
+}
+
+function updateIntroductionCounts() {
+  elements.introductionEnHeadlineCount.textContent = String(
+    elements.introductionEnHeadline.value.length,
+  )
+  elements.introductionEnBodyCount.textContent = String(elements.introductionEnBody.value.length)
+  elements.introductionZhHeadlineCount.textContent = String(
+    elements.introductionZhHeadline.value.length,
+  )
+  elements.introductionZhBodyCount.textContent = String(elements.introductionZhBody.value.length)
+}
+
+function syncIntroductionFromForm() {
+  state.content.introduction.en.headline = elements.introductionEnHeadline.value
+  state.content.introduction.en.body = elements.introductionEnBody.value
+  state.content.introduction.zh.headline = elements.introductionZhHeadline.value
+  state.content.introduction.zh.body = elements.introductionZhBody.value
+  updateIntroductionCounts()
+  setDirty(true)
+  renderIntroductionPreview()
 }
 
 function syncProjectFromForm(changedField) {
@@ -380,7 +507,17 @@ function moveProject(direction) {
 
 function contentForSave() {
   return {
-    version: 1,
+    version: 2,
+    introduction: {
+      en: {
+        headline: state.content.introduction.en.headline,
+        body: state.content.introduction.en.body,
+      },
+      zh: {
+        headline: state.content.introduction.zh.headline,
+        body: state.content.introduction.zh.body,
+      },
+    },
     projects: state.content.projects.map((project) => {
       const normalized = {
         id: project.id,
@@ -427,6 +564,61 @@ function errorMessage(error) {
   return firstIssue ? `${error.message} ${firstIssue.path}: ${firstIssue.message}` : error.message
 }
 
+function focusAfterSave(field) {
+  if (!field) return
+  window.setTimeout(() => field.focus(), 0)
+}
+
+function revealValidationIssue(error) {
+  const path = error.issues?.[0]?.path
+  if (!path) return
+
+  if (path.startsWith('introduction.')) {
+    state.activeView = 'introduction'
+    renderList()
+    renderEditor()
+    const introductionFields = {
+      'introduction.en.headline': elements.introductionEnHeadline,
+      'introduction.en.body': elements.introductionEnBody,
+      'introduction.zh.headline': elements.introductionZhHeadline,
+      'introduction.zh.body': elements.introductionZhBody,
+    }
+    focusAfterSave(introductionFields[path])
+    return
+  }
+
+  const projectMatch = /^projects\[(\d+)\](?:\.([A-Za-z]+))?/.exec(path)
+  if (!projectMatch) return
+  const project = state.content.projects[Number(projectMatch[1])]
+  if (!project) return
+
+  state.activeView = 'project'
+  state.selectedId = project.id
+  state.filter = 'all'
+  elements.search.value = ''
+  for (const button of elements.filterButtons) {
+    button.setAttribute('aria-pressed', String(button.dataset.filter === 'all'))
+  }
+  renderList()
+  renderEditor()
+
+  const projectFields = {
+    alt: elements.alt,
+    demo: elements.demo,
+    demoType: elements.demoType,
+    description: elements.description,
+    github: elements.github,
+    image: elements.image,
+    mediaType: elements.mediaType,
+    name: elements.name,
+    published: elements.published,
+    section: elements.section,
+    stack: elements.stack,
+    year: elements.year,
+  }
+  focusAfterSave(projectFields[projectMatch[2]])
+}
+
 async function saveProjects() {
   if (state.busy) return false
   if (state.conflicted) {
@@ -434,10 +626,13 @@ async function saveProjects() {
     return false
   }
   if (!state.dirty) return true
-  if (!elements.form.reportValidity()) return false
+  const activeForm = state.activeView === 'introduction'
+    ? elements.introductionForm
+    : elements.projectForm
+  if (!activeForm.reportValidity()) return false
 
   setBusy(true, 'Saving')
-  setStatus('Validating and saving project content…')
+  setStatus('Validating and saving portfolio content…')
   try {
     const { body, response } = await apiJson('/api/projects', {
       method: 'PUT',
@@ -459,6 +654,7 @@ async function saveProjects() {
     return true
   } catch (error) {
     setStatus(errorMessage(error), 'error')
+    if (error.status === 422) revealValidationIssue(error)
     if (error.status === 409 && error.details?.code === 'etag_conflict') {
       state.conflicted = true
       elements.reload.hidden = false
@@ -603,13 +799,13 @@ async function publishProjects() {
 }
 
 async function loadWorkspace() {
-  setStatus('Loading local project content…')
+  setStatus('Loading local portfolio content…')
   try {
     const [sessionResult, projectsResponse] = await Promise.all([
       apiJson('/api/session'),
       fetch('/api/projects', { cache: 'no-store' }),
     ])
-    if (!projectsResponse.ok) throw new Error(`Could not load projects (${projectsResponse.status}).`)
+    if (!projectsResponse.ok) throw new Error(`Could not load portfolio content (${projectsResponse.status}).`)
     state.token = sessionResult.body.token
     state.etag = projectsResponse.headers.get('ETag')
     state.content = await projectsResponse.json()
@@ -626,7 +822,7 @@ async function loadWorkspace() {
     elements.list.replaceChildren()
     const message = document.createElement('div')
     message.className = 'loading-card'
-    message.textContent = 'Could not load project content.'
+    message.textContent = 'Could not load portfolio content.'
     elements.list.append(message)
     elements.draftState.textContent = 'Offline'
     elements.reload.textContent = 'Retry'
@@ -654,6 +850,7 @@ elements.search.addEventListener('input', () => {
   renderEditor()
 })
 elements.add.addEventListener('click', addProject)
+elements.introductionEntry.addEventListener('click', selectIntroduction)
 elements.delete.addEventListener('click', confirmDelete)
 elements.cancelDelete.addEventListener('click', () => elements.deleteDialog.close())
 elements.confirmDelete.addEventListener('click', deleteSelectedProject)
@@ -685,9 +882,20 @@ for (const button of elements.filterButtons) {
   })
 }
 
-for (const field of editableFields) {
+for (const field of projectEditableFields) {
   field.addEventListener('input', () => syncProjectFromForm(field))
   field.addEventListener('change', () => syncProjectFromForm(field))
+}
+
+for (const field of introductionEditableFields) {
+  field.addEventListener('input', syncIntroductionFromForm)
+}
+
+for (const button of elements.previewLanguageButtons) {
+  button.addEventListener('click', () => {
+    state.previewLanguage = button.dataset.previewLanguage
+    renderIntroductionPreview()
+  })
 }
 
 for (const dialog of [elements.deleteDialog, elements.publishDialog]) {

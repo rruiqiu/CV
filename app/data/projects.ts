@@ -4,6 +4,16 @@ export type ProjectSection = 'current' | 'past'
 export type ProjectMediaType = 'image' | 'video'
 export type ProjectDemoType = 'external' | 'video'
 
+export interface PortfolioIntroductionCopy {
+  headline: string
+  body: string
+}
+
+export interface PortfolioIntroduction {
+  en: PortfolioIntroductionCopy
+  zh: PortfolioIntroductionCopy
+}
+
 export interface PortfolioProject {
   id: string
   section: ProjectSection
@@ -21,6 +31,8 @@ export interface PortfolioProject {
 }
 
 const projects = portfolioContent.projects as PortfolioProject[]
+
+export const introduction = portfolioContent.introduction as PortfolioIntroduction
 
 export const pastProjects = projects.filter(
   (project) => project.published && project.section === 'past',

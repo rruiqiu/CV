@@ -31,8 +31,19 @@
         <div class="panel-heading">
           <div>
             <p class="eyebrow">CONTENT</p>
-            <h2 id="projects-heading">Projects</h2>
+            <h2 id="projects-heading">Site sections</h2>
           </div>
+        </div>
+        <button class="content-entry" id="introduction-entry" type="button" aria-current="page" disabled>
+          <span class="content-entry-mark" aria-hidden="true">IN</span>
+          <span class="content-entry-copy">
+            <strong>Introduction</strong>
+            <span>English &amp; Chinese profile copy</span>
+          </span>
+          <span aria-hidden="true">›</span>
+        </button>
+        <div class="content-subheading">
+          <h3>Projects</h3>
           <span class="count" id="project-count">—</span>
         </div>
         <label class="search-field">
@@ -54,18 +65,60 @@
       <section class="editor-panel" id="editor" aria-labelledby="editor-heading">
         <div class="panel-heading editor-heading">
           <div>
-            <p class="eyebrow">PROJECT DETAILS</p>
+            <p class="eyebrow" id="editor-eyebrow">INTRODUCTION</p>
             <h2 id="editor-heading">Select a project</h2>
           </div>
-          <div class="editor-actions">
+          <div class="editor-actions" id="project-actions" hidden>
             <button class="icon-button" id="move-up" type="button" aria-label="Move project up" title="Move up" disabled>↑</button>
             <button class="icon-button" id="move-down" type="button" aria-label="Move project down" title="Move down" disabled>↓</button>
             <button class="icon-button icon-button-danger" id="delete-project" type="button" aria-label="Delete project" title="Delete project" disabled>×</button>
-            <span class="draft-state" id="draft-state">Loading</span>
           </div>
+          <span class="draft-state" id="draft-state">Loading</span>
         </div>
 
-        <form id="project-form">
+        <form id="introduction-form">
+          <section class="language-block" aria-labelledby="english-introduction-heading" lang="en">
+            <div class="language-heading">
+              <div>
+                <p class="eyebrow">ENGLISH</p>
+                <h3 id="english-introduction-heading">Primary introduction</h3>
+              </div>
+              <span>EN</span>
+            </div>
+            <label>
+              Opening line
+              <input id="introduction-en-headline" name="introductionEnHeadline" type="text" maxlength="240" required disabled />
+              <span class="field-note"><span id="introduction-en-headline-count">0</span> / 240</span>
+            </label>
+            <label>
+              About paragraph
+              <textarea id="introduction-en-body" name="introductionEnBody" rows="9" maxlength="4000" required disabled></textarea>
+              <span class="field-note"><span id="introduction-en-body-count">0</span> / 4000</span>
+            </label>
+          </section>
+
+          <section class="language-block" aria-labelledby="chinese-introduction-heading" lang="zh-CN">
+            <div class="language-heading">
+              <div>
+                <p class="eyebrow">中文</p>
+                <h3 id="chinese-introduction-heading">中文介绍</h3>
+              </div>
+              <span>中</span>
+            </div>
+            <label>
+              开场介绍
+              <input id="introduction-zh-headline" name="introductionZhHeadline" type="text" maxlength="240" required disabled />
+              <span class="field-note"><span id="introduction-zh-headline-count">0</span> / 240</span>
+            </label>
+            <label>
+              详细介绍
+              <textarea id="introduction-zh-body" name="introductionZhBody" rows="8" maxlength="4000" required disabled></textarea>
+              <span class="field-note"><span id="introduction-zh-body-count">0</span> / 4000</span>
+            </label>
+          </section>
+        </form>
+
+        <form id="project-form" hidden>
           <div class="form-row form-row-compact">
             <label>
               Section
@@ -157,13 +210,27 @@
       <aside class="preview-panel" aria-labelledby="preview-heading">
         <div class="panel-heading">
           <div>
-            <p class="eyebrow">LIVE CARD</p>
-            <h2 id="preview-heading">Preview</h2>
+              <p class="eyebrow" id="preview-eyebrow">LIVE INTRO</p>
+              <h2 id="preview-heading">Preview</h2>
+            </div>
+          <div class="preview-controls">
+            <div class="preview-language" id="preview-language" role="group" aria-label="Preview language">
+              <button type="button" data-preview-language="en" aria-pressed="true">EN</button>
+              <button type="button" data-preview-language="zh" aria-pressed="false">中</button>
+            </div>
+            <span class="viewport-label">Desktop</span>
           </div>
-          <span class="viewport-label">Desktop</span>
         </div>
         <div class="preview-stage">
-          <article class="preview-card" id="preview-card">
+          <article class="introduction-preview-card" id="introduction-preview-card">
+            <img src="/images/profile.jpg" alt="Richard Qiu" />
+            <div>
+              <p class="introduction-preview-name">Richard Qiu</p>
+              <p class="introduction-preview-headline" id="introduction-preview-headline">Introduction opening line</p>
+              <p class="introduction-preview-body" id="introduction-preview-body">Introduction paragraph will appear here.</p>
+            </div>
+          </article>
+          <article class="preview-card" id="preview-card" hidden>
             <div class="preview-media" id="preview-media">
               <span>Select a project to preview</span>
             </div>

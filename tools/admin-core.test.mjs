@@ -14,7 +14,17 @@ import {
 } from './admin-core.mjs'
 
 const validContent = {
-  version: 1,
+  version: 2,
+  introduction: {
+    en: {
+      headline: "Hi, I'm Richard — a software engineer based in Toronto.",
+      body: 'I build infrastructure and applications that make software delivery more reliable.',
+    },
+    zh: {
+      headline: '你好，我是邱瑞，一名在多伦多工作的软件工程师。',
+      body: '我专注于构建让软件交付和实际运营更加可靠的基础设施与应用。',
+    },
+  },
   projects: [
     {
       id: 'sample-project-2026',
@@ -39,7 +49,24 @@ test('validates and normalizes portfolio content', () => {
 test('repository project content matches the local admin schema', async () => {
   const source = await readFile(new URL('../content/projects.json', import.meta.url), 'utf8')
   const content = validateContent(JSON.parse(source))
-  assert.equal(content.version, 1)
+  assert.equal(content.version, 2)
+  assert.match(content.introduction.en.headline, /Richard/)
+})
+
+test('requires complete bilingual introduction content', () => {
+  const missingLocale = structuredClone(validContent)
+  delete missingLocale.introduction.zh
+  assert.throws(() => validateContent(missingLocale), ContentValidationError)
+
+  const emptyHeadline = structuredClone(validContent)
+  emptyHeadline.introduction.en.headline = '   '
+  assert.throws(() => validateContent(emptyHeadline), ContentValidationError)
+})
+
+test('rejects unknown introduction fields', () => {
+  const invalid = structuredClone(validContent)
+  invalid.introduction.en.subtitle = 'Unexpected'
+  assert.throws(() => validateContent(invalid), ContentValidationError)
 })
 
 test('rejects duplicate ids', () => {

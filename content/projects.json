@@ -1,5 +1,15 @@
 {
-  "version": 1,
+  "version": 2,
+  "introduction": {
+    "en": {
+      "headline": "Hi, I'm Richard — an enthusiastic software engineer!",
+      "body": "Driven by the belief that software should make people's lives easier and improve the world, I am passionate about building applications that are highly scalable, reliable, and intuitive. I enjoy diving into how systems work, exploring new technologies, and fixing things that feel inefficient. From the underlying technical architecture to the final user experience, I love turning rough ideas into robust tools that create genuine real-world impact."
+    },
+    "zh": {
+      "headline": "你好，我是邱瑞，一名在多伦多工作的软件工程师。",
+      "body": "我专注于构建让软件交付和实际运营更加可靠的基础设施与应用。目前在 ArcTrade，我负责支持 300+ 个 AWS 微服务的 CI/CD 与平台工具；此前在 Veoneer，我开发过制造业和仓储软件，其中一套系统将订单周期缩短了 70%。我毕业于麦克马斯特大学电气工程专业，并将在 2027 年开始佐治亚理工学院的非全日制 OMSCS，计划专注于计算系统与机器学习。"
+    }
+  },
   "projects": [
     {
       "id": "auto-bike-2025",
