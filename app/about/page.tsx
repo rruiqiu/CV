@@ -1,7 +1,7 @@
 'use client'
 import style from '@/styles/about.module.css'
 import NavBar from '@/app/components/navbar'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import About from '@/app/components/about'
 import Project from '@/app/components/project'
 import CurrentProject from '@/app/components/currentproject'
@@ -11,25 +11,6 @@ import currentprojectlisting from '@/app/data/currentprojectlisting'
 const AboutPage = () => {
   const [theme, setTheme] = useState<string>('Light')
   const [language, setLanguage] = useState<string>('En')
-
-  useEffect(() => {
-    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    const syncTheme = () => {
-      setTheme(darkModeQuery.matches ? 'Dark' : 'Light')
-    }
-    const syncTimer = window.setTimeout(syncTheme, 0)
-
-    // Listener for theme changes
-    const handleChange = (event: MediaQueryListEvent) => {
-      setTheme(event.matches ? 'Dark' : 'Light')
-    }
-    darkModeQuery.addEventListener('change', handleChange)
-
-    return () => {
-      window.clearTimeout(syncTimer)
-      darkModeQuery.removeEventListener('change', handleChange)
-    }
-  }, [])
 
   // Callback function to update theme
   const updateTheme = (newTheme: string) => {

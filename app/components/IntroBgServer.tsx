@@ -1,7 +1,4 @@
-//this is the example of the server fetching which will handle the cache and validation better, but in order to host my CV into github pages, the site has to be static. (I will consider use this after I migrate this site to the server)
-
-import styles from '@/styles/IntroBg.module.css'
-import Link from 'next/link'
+import IntroBg, { type BingWallpaper } from '@/app/components/IntroBg'
 
 interface BingWallpaperResponse {
   images: Array<{
@@ -10,77 +7,46 @@ interface BingWallpaperResponse {
   }>
 }
 
-//also add another function to allow user auto pick a random wallpaper from 0-7
-const Bg = async () => {
-  // const url = await Promise.all([BGData])
+const BING_ORIGIN = 'https://www.bing.com'
+const BING_ARCHIVE_URL =
+  `${BING_ORIGIN}/HPImageArchive.aspx?format=js&idx=0&n=8&mkt=en-CA`
+const BING_REQUEST_TIMEOUT_MS = 8000
 
-  // will quit using this server rendering as the vercel keeps giving weird bugs, suspect this api endpoint is blocked by the cloudware and whenever it triggers it will revalidate the ip
-  const fetchData = async () => {
-    const requestOptions: RequestInit = {
-      method: 'GET',
-      redirect: 'follow',
-    }
-    //'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA'
-    //yeah this api won't work in production
-    const url =
-      'https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US'
-    const response = await fetch(url, requestOptions)
-
-    // console.log(response)
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`)
-    }
-    const data = (await response.json()) as BingWallpaperResponse
-    return data
-  }
-
-  const BGData = await fetchData()
-  const ImageLink = 'https://www.bing.com/' + BGData.images[0].url
-  const copyright = BGData.images[0].copyright
-  return (
-    <>
-      <div
-        className={styles.BG}
-        style={{
-          background: `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${ImageLink})`,
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed',
-          backgroundSize: 'cover',
-        }}>
-        <div className={styles.content}>
-          <h1 className={styles.name}>Richard Qiu</h1>
-          <nav className={styles.navbar}>
-            <Link
-              className={styles.linkspace}
-              href={'https://rruiqiu.github.io/Blog/'}>
-              BLOG
-            </Link>
-
-            <Link className={styles.linkspace} href={'/about'}>
-              HOME
-            </Link>
-
-            <Link
-              className={styles.linkspace}
-              href={'https://github.com/rruiqiu'}>
-              GITHUB
-            </Link>
-          </nav>
-        </div>
-        <div className={styles.footer}>
-          <div>
-            <p className={styles.HeaderFooter}>{copyright}</p>
-          </div>
-          <div>
-            <p className={styles.Description}>
-              This is a daily generated background image fetched from
-              BingWallpaper
-            </p>
-          </div>
-        </div>
-      </div>
-    </>
-  )
+const fallbackWallpaper: BingWallpaper = {
+  url: '',
+  copyright: 'Bing wallpaper is temporarily unavailable',
 }
-export default Bg
+
+const getWallpapers = async (): Promise<BingWallpaper[]> => {
+  try {
+    const response = await fetch(BING_ARCHIVE_URL, {
+      redirect: 'follow',
+      signal: AbortSignal.timeout(BING_REQUEST_TIMEOUT_MS),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Bing wallpaper request failed with ${response.status}`)
+    }
+
+    const data = (await response.json()) as BingWallpaperResponse
+    const wallpapers = data.images
+      .filter((image) => image.url && image.copyright)
+      .map((image) => ({
+        url: new URL(image.url, BING_ORIGIN).toString(),
+        copyright: image.copyright,
+      }))
+
+    return wallpapers.length > 0 ? wallpapers : [fallbackWallpaper]
+  } catch (error) {
+    console.error('Unable to prepare Bing wallpapers:', error)
+    return [fallbackWallpaper]
+  }
+}
+
+const IntroBgServer = async () => {
+  const wallpapers = await getWallpapers()
+
+  return <IntroBg wallpapers={wallpapers} />
+}
+
+export default IntroBgServer

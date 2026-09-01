@@ -9,7 +9,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="color-scheme" content="only light" />
+      </head>
       <body style={{ margin: '0px' }}>{children}</body>
     </html>
   )

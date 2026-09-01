@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react'
+import { FiMaximize2 } from 'react-icons/fi'
 import { getImageSrc } from '@/app/data/imageImports'
 import type { PortfolioProject } from '@/app/data/projects'
 import style from '@/styles/project.module.css'
@@ -11,10 +12,9 @@ interface ProjectCardsProps {
   labelledBy?: string
 }
 
-interface ActiveVideo {
-  src: string
-  title: string
-}
+type ActiveMedia =
+  | { type: 'image'; src: string; title: string; alt: string }
+  | { type: 'video'; src: string; title: string; loop?: boolean }
 
 const getVideoMimeType = (src: string) => {
   if (/\.mov(?:[?#].*)?$/i.test(src)) return 'video/quicktime'
@@ -24,14 +24,20 @@ const getVideoMimeType = (src: string) => {
 
 interface ProjectPreviewVideoProps {
   src: string
-  alt: string
+  title: string
   autoplay: boolean
+  isEnglish: boolean
+  onOpen: (opener: HTMLButtonElement) => void
 }
 
-const ProjectPreviewVideo = ({ src, alt, autoplay }: ProjectPreviewVideoProps) => {
-  const [isPlaying, setIsPlaying] = useState(false)
+const ProjectPreviewVideo = ({
+  src,
+  title,
+  autoplay,
+  isEnglish,
+  onOpen,
+}: ProjectPreviewVideoProps) => {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const manuallyPausedRef = useRef(false)
 
   useEffect(() => {
     const video = videoRef.current
@@ -46,8 +52,7 @@ const ProjectPreviewVideo = ({ src, alt, autoplay }: ProjectPreviewVideoProps) =
       ([entry]) => {
         if (
           entry.isIntersecting &&
-          entry.intersectionRatio >= 0.35 &&
-          !manuallyPausedRef.current
+          entry.intersectionRatio >= 0.35
         ) {
           void video.play().catch(() => undefined)
         } else {
@@ -65,45 +70,32 @@ const ProjectPreviewVideo = ({ src, alt, autoplay }: ProjectPreviewVideoProps) =
     }
   }, [autoplay])
 
-  const togglePlayback = () => {
-    const video = videoRef.current
-    if (!video) return
-
-    if (video.paused) {
-      manuallyPausedRef.current = false
-      void video.play().catch(() => undefined)
-    } else {
-      manuallyPausedRef.current = true
-      video.pause()
-    }
-  }
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLVideoElement>) => {
-    if (event.key !== 'Enter' && event.key !== ' ') return
-    event.preventDefault()
-    togglePlayback()
-  }
-
   return (
-    <video
-      ref={videoRef}
-      className={`${style.projectImageSize} ${style.projectMotionPreview}`}
-      src={getImageSrc(src)}
-      role="button"
-      aria-label={`${alt}. ${isPlaying ? 'Pause' : 'Play'} animation`}
-      title={isPlaying ? 'Pause animation' : 'Play animation'}
-      tabIndex={0}
-      loop
-      muted
-      playsInline
-      preload="metadata"
-      width={300}
-      height={200}
-      onClick={togglePlayback}
-      onKeyDown={handleKeyDown}
-      onPlay={() => setIsPlaying(true)}
-      onPause={() => setIsPlaying(false)}
-    />
+    <button
+      type="button"
+      className={style.projectImageButton}
+      aria-haspopup="dialog"
+      aria-label={
+        isEnglish ? `View ${title} video larger` : `放大查看 ${title} 视频`
+      }
+      title={isEnglish ? 'View larger' : '放大查看'}
+      onClick={(event) => onOpen(event.currentTarget)}>
+      <video
+        ref={videoRef}
+        className={`${style.projectImageSize} ${style.projectMotionPreview}`}
+        src={getImageSrc(src)}
+        aria-hidden="true"
+        loop
+        muted
+        playsInline
+        preload="metadata"
+        width={300}
+        height={200}
+      />
+      <span className={style.imageZoomHint} aria-hidden="true">
+        <FiMaximize2 />
+      </span>
+    </button>
   )
 }
 
@@ -114,11 +106,11 @@ const ProjectCards = ({
   displayMode = 'list',
   labelledBy,
 }: ProjectCardsProps) => {
-  const [activeVideo, setActiveVideo] = useState<ActiveVideo | null>(null)
+  const [activeMedia, setActiveMedia] = useState<ActiveMedia | null>(null)
   const [autoplayPreviews, setAutoplayPreviews] = useState(false)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const modalContentRef = useRef<HTMLDivElement>(null)
-  const videoOpenerRef = useRef<HTMLButtonElement | null>(null)
+  const mediaOpenerRef = useRef<HTMLButtonElement | null>(null)
   const instructionsId = useId()
   const isScrollable = displayMode === 'scroll' && projects.length > 0
   const isEnglish = language === 'En'
@@ -134,15 +126,15 @@ const ProjectCards = ({
   }, [])
 
   useEffect(() => {
-    if (!activeVideo) return
+    if (!activeMedia) return
     const previousOverflow = document.body.style.overflow
-    const opener = videoOpenerRef.current
+    const opener = mediaOpenerRef.current
     document.body.style.overflow = 'hidden'
     closeButtonRef.current?.focus()
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setActiveVideo(null)
+        setActiveMedia(null)
         return
       }
 
@@ -183,7 +175,7 @@ const ProjectCards = ({
       document.removeEventListener('keydown', handleKeyDown)
       if (opener?.isConnected) opener.focus()
     }
-  }, [activeVideo])
+  }, [activeMedia])
 
   const renderProject = (project: PortfolioProject) => (
     <article key={project.id} className={style.project}>
@@ -191,21 +183,54 @@ const ProjectCards = ({
         {project.mediaType === 'video' ? (
           <ProjectPreviewVideo
             src={project.image}
-            alt={project.alt}
-            autoplay={autoplayPreviews}
+            title={project.name}
+            autoplay={autoplayPreviews && !activeMedia}
+            isEnglish={isEnglish}
+            onOpen={(opener) => {
+              mediaOpenerRef.current = opener
+              setActiveMedia({
+                type: 'video',
+                src: project.image,
+                title: project.name,
+                loop: true,
+              })
+            }}
           />
         ) : (
-          // Project media can be either a local file or an external URL.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            className={style.projectImageSize}
-            src={getImageSrc(project.image)}
-            alt={project.alt}
-            loading="lazy"
-            decoding="async"
-            width={300}
-            height={200}
-          />
+          <button
+            type="button"
+            className={style.projectImageButton}
+            aria-haspopup="dialog"
+            aria-label={
+              isEnglish
+                ? `View ${project.name} image larger`
+                : `放大查看 ${project.name} 图片`
+            }
+            title={isEnglish ? 'View larger' : '放大查看'}
+            onClick={(event) => {
+              mediaOpenerRef.current = event.currentTarget
+              setActiveMedia({
+                type: 'image',
+                src: project.image,
+                title: project.name,
+                alt: project.alt,
+              })
+            }}>
+            {/* Project media can be either a local file or an external URL. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className={style.projectImageSize}
+              src={getImageSrc(project.image)}
+              alt={project.alt}
+              loading="lazy"
+              decoding="async"
+              width={300}
+              height={200}
+            />
+            <span className={style.imageZoomHint} aria-hidden="true">
+              <FiMaximize2 />
+            </span>
+          </button>
         )}
       </div>
 
@@ -240,9 +265,14 @@ const ProjectCards = ({
               <button
                 type="button"
                 className={style.projectButton}
+                aria-haspopup="dialog"
                 onClick={(event) => {
-                  videoOpenerRef.current = event.currentTarget
-                  setActiveVideo({ src: project.demo as string, title: project.name })
+                  mediaOpenerRef.current = event.currentTarget
+                  setActiveMedia({
+                    type: 'video',
+                    src: project.demo as string,
+                    title: project.name,
+                  })
                 }}>
                 Demo
               </button>
@@ -288,13 +318,19 @@ const ProjectCards = ({
         <div className={style.projectList}>{projects.map(renderProject)}</div>
       )}
 
-      {activeVideo ? (
+      {activeMedia ? (
         <div
           className={style.modalOverlay}
           role="dialog"
           aria-modal="true"
-          aria-label={`${activeVideo.title} demo video`}
-          onClick={() => setActiveVideo(null)}>
+          aria-label={
+            activeMedia.type === 'image'
+              ? isEnglish
+                ? `${activeMedia.title} enlarged image`
+                : `${activeMedia.title} 放大图片`
+              : `${activeMedia.title} demo video`
+          }
+          onClick={() => setActiveMedia(null)}>
           <div
             ref={modalContentRef}
             className={style.modalContent}
@@ -303,17 +339,38 @@ const ProjectCards = ({
               ref={closeButtonRef}
               type="button"
               className={style.closeButton}
-              aria-label="Close demo video"
-              onClick={() => setActiveVideo(null)}>
+              aria-label={
+                activeMedia.type === 'image'
+                  ? isEnglish
+                    ? 'Close enlarged image'
+                    : '关闭放大图片'
+                  : 'Close demo video'
+              }
+              onClick={() => setActiveMedia(null)}>
               ×
             </button>
-            <video controls autoPlay className={style.videoPlayer}>
-              <source
-                src={getImageSrc(activeVideo.src)}
-                type={getVideoMimeType(activeVideo.src)}
+            {activeMedia.type === 'image' ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className={style.imageViewer}
+                src={getImageSrc(activeMedia.src)}
+                alt={activeMedia.alt}
+                decoding="async"
               />
-              Your browser does not support the video tag.
-            </video>
+            ) : (
+              <video
+                controls
+                autoPlay
+                loop={activeMedia.loop}
+                playsInline
+                className={style.videoPlayer}>
+                <source
+                  src={getImageSrc(activeMedia.src)}
+                  type={getVideoMimeType(activeMedia.src)}
+                />
+                Your browser does not support the video tag.
+              </video>
+            )}
           </div>
         </div>
       ) : null}

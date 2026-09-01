@@ -38,18 +38,20 @@ const navbar: React.FC<navbarprops> = (props) => {
               </Link>
             </button> */}
             <button
+              type="button"
               onClick={handleThemeChange}
-              style={{ border: 'none', backgroundColor: 'transparent' }}>
-              <Link
-                style={
-                  props.darkmode === 'Light'
-                    ? { color: 'initial' }
-                    : { color: 'white' }
-                }
-                href={''}
-                className={style.translatepos}>
-                <CgDarkMode className={style.translate} />
-              </Link>
+              className={`${style.themeButton} ${
+                props.darkmode === 'Light'
+                  ? style.themeButtonLight
+                  : style.themeButtonDark
+              }`}
+              aria-label={
+                props.darkmode === 'Light'
+                  ? 'Switch to dark theme'
+                  : 'Switch to light theme'
+              }
+              aria-pressed={props.darkmode === 'Dark'}>
+              <CgDarkMode className={style.translate} aria-hidden="true" />
             </button>
           </div>
 

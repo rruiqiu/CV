@@ -1,102 +1,95 @@
 'use client'
-import styles from '@/styles/IntroBg.module.css'
+
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { FiRefreshCw } from 'react-icons/fi'
+import styles from '@/styles/IntroBg.module.css'
 
-//add random function that will allow the user to choose a random image.
-//also exploring the cache ability that can reduce the refetching request
-
-interface data {
-  ImageLink: string | null
-  copyright: string | null
-}
-
-interface BingWallpaperData {
+export interface BingWallpaper {
   url: string
   copyright: string
 }
 
-const Bg = () => {
-  const [data, setData] = useState<data>({
-    ImageLink: '',
-    copyright: '',
-  })
+interface IntroBgProps {
+  wallpapers: BingWallpaper[]
+}
+
+const IntroBg = ({ wallpapers }: IntroBgProps) => {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const activeWallpaper = wallpapers[activeIndex] ?? wallpapers[0]
+  const canSwitchWallpaper = wallpapers.length > 1
 
   useEffect(() => {
-    const getData = async () => {
-      const requestOptions: RequestInit = {
-        method: 'GET',
-        redirect: 'follow',
-      }
-      try {
-        const response = await fetch(
-          'https://bing.biturl.top/?resolution=1920&format=json&index=0&mkt=en-CA',
-          requestOptions
-        )
-        if (response.ok) {
-          const jsonData = (await response.json()) as BingWallpaperData
-          const { url, copyright } = jsonData
+    if (!canSwitchWallpaper) return
 
-          setData({
-            ImageLink: url,
-            copyright,
-          })
-          localStorage.setItem('ImageLink', url)
-          localStorage.setItem('copyright', copyright)
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
+    const nextIndex = (activeIndex + 1) % wallpapers.length
+    const preloadTimer = window.setTimeout(() => {
+      const nextWallpaper = new Image()
+      const nextWallpaperUrl = wallpapers[nextIndex].url
+      if (nextWallpaperUrl) nextWallpaper.src = nextWallpaperUrl
+    }, 1200)
 
-    void getData()
-  }, [])
+    return () => window.clearTimeout(preloadTimer)
+  }, [activeIndex, canSwitchWallpaper, wallpapers])
+
+  if (!activeWallpaper) return null
+
+  const switchWallpaper = () => {
+    setActiveIndex((currentIndex) => (currentIndex + 1) % wallpapers.length)
+  }
+
+  const backgroundImage = activeWallpaper.url
+    ? `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${activeWallpaper.url})`
+    : 'linear-gradient(135deg, #182231, #0d1118)'
+  const footerDescription = activeWallpaper.url
+    ? `Selected from Bing's latest daily wallpapers`
+    : 'A fallback background is being shown'
 
   return (
-    <>
-      <div
-        className={styles.BG}
-        style={{
-          backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${data.ImageLink})`,
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed',
-          backgroundSize: 'cover',
-        }}>
-        <div className={styles.content}>
-          <h1 className={styles.name}>Richard Qiu</h1>
-          <nav className={styles.navbar}>
-            <Link
-              className={styles.linkspace}
-              href={'https://rruiqiu.github.io/Blog/'}
-              prefetch={false}>
-              BLOG
-            </Link>
+    <div
+      className={styles.BG}
+      style={{
+        backgroundImage,
+      }}>
+      <div className={styles.content}>
+        <h1 className={styles.name}>Richard Qiu</h1>
+        <nav className={styles.navbar}>
+          <Link
+            className={styles.linkspace}
+            href="https://rruiqiu.github.io/Blog/"
+            prefetch={false}>
+            BLOG
+          </Link>
 
-            <Link className={styles.linkspace} href={'/about'}>
-              HOME
-            </Link>
+          <Link className={styles.linkspace} href="/about">
+            HOME
+          </Link>
 
-            <Link
-              className={styles.linkspace}
-              href={'https://github.com/rruiqiu'}>
-              GITHUB
-            </Link>
-          </nav>
-        </div>
-        <div className={styles.footer}>
-          <div>
-            <p className={styles.HeaderFooter}>{data.copyright}</p>
-          </div>
-          <div>
-            <p className={styles.Description}>
-              This is a daily generated background image fetched from
-              BingWallpaper
-            </p>
-          </div>
-        </div>
+          <Link className={styles.linkspace} href="https://github.com/rruiqiu">
+            GITHUB
+          </Link>
+        </nav>
       </div>
-    </>
+
+      <footer className={styles.footer}>
+        <p className={styles.HeaderFooter} aria-live="polite">
+          {activeWallpaper.copyright}
+        </p>
+        <div className={styles.footerActions}>
+          <p className={styles.Description}>{footerDescription}</p>
+          {canSwitchWallpaper ? (
+            <button
+              type="button"
+              className={styles.wallpaperButton}
+              onClick={switchWallpaper}>
+              <FiRefreshCw aria-hidden="true" />
+              Get a new one
+            </button>
+          ) : null}
+        </div>
+      </footer>
+    </div>
   )
 }
-export default Bg
+
+export default IntroBg

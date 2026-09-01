@@ -52,13 +52,54 @@
   margin: auto;
 }
 
-.projectMotionPreview {
-  cursor: pointer;
+.projectImageButton {
+  position: relative;
+  display: block;
+  width: clamp(300px, 30vw, 320px);
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: white;
+  cursor: zoom-in;
 }
 
-.projectMotionPreview:focus-visible {
+.projectImageButton .projectImageSize {
+  width: 100%;
+}
+
+.projectImageButton:focus-visible {
   outline: 3px solid rgb(255 115 0 / 55%);
   outline-offset: 3px;
+}
+
+.imageZoomHint {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 24%);
+  border-radius: 50%;
+  background: rgb(0 0 0 / 62%);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 24%);
+  opacity: 0.72;
+  transition: opacity 160ms ease, background-color 160ms ease;
+  pointer-events: none;
+}
+
+.projectImageButton:hover .imageZoomHint,
+.projectImageButton:focus-visible .imageZoomHint {
+  background: rgb(0 0 0 / 82%);
+  opacity: 1;
+}
+
+.projectMotionPreview {
+  cursor: inherit;
+  pointer-events: none;
 }
 
 .projectContent {
@@ -310,6 +351,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  box-sizing: border-box;
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  overscroll-behavior: contain;
   z-index: 1000;
 }
 .closeButton {
@@ -335,16 +380,19 @@
 }
 .modalContent {
   position: relative;
-  width: 90%;
+  box-sizing: border-box;
+  width: min(92vw, 1200px);
   max-width: 1200px;
   background: #000;
   padding: 20px;
   border-radius: 8px;
 }
-.videoPlayer {
+.videoPlayer,
+.imageViewer {
+  display: block;
   width: 100%;
   height: auto;
-  max-height: 80vh;
+  max-height: min(80vh, calc(100dvh - 64px));
   object-fit: contain;
 }
 
@@ -365,6 +413,7 @@
   }
 
   .projectScrollList .projectImageSize,
+  .projectScrollList .projectImageButton,
   .projectScrollList .projectContent,
   .projectScrollList .projectContentDark {
     width: 100%;
@@ -387,6 +436,24 @@
     width: 90vw;
     max-width: 350px;
     height: auto;
+  }
+
+  .projectImageButton {
+    width: 90vw;
+    max-width: 350px;
+  }
+
+  .modalContent {
+    padding: 10px;
+  }
+
+  .closeButton {
+    top: 6px;
+    right: 6px;
+    width: 48px;
+    height: 48px;
+    padding: 6px;
+    font-size: 32px;
   }
 
   .projectContent,

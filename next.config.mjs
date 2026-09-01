@@ -5,6 +5,8 @@ const nextConfig = {
   output: 'export',
   basePath,
   assetPrefix: basePath ? `${basePath}/` : '',
+  allowedDevOrigins: ['127.0.0.1'],
+  agentRules: false,
   images: {
     unoptimized: true,
   },

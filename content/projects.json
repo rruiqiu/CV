@@ -12,6 +12,46 @@
   },
   "projects": [
     {
+      "id": "multi-agent-trading-research-platform-2026",
+      "section": "past",
+      "published": true,
+      "image": "/images/trading-agents-platform.webp",
+      "mediaType": "image",
+      "alt": "TradingAgents Job History dashboard showing completed multi-ticker analysis runs and saved reports",
+      "name": "Multi-Agent Trading Research Platform",
+      "year": 2026,
+      "description": "Extended the open-source TradingAgents framework into a local, full-stack investment research workstation. A LangGraph pipeline coordinates market, sentiment, news, and fundamentals analysts, then stages bull/bear and risk debates before producing a structured portfolio decision. I added concurrent multi-ticker analysis, point-in-time backtests with isolated memory, persistent reports, read-only Interactive Brokers portfolio views, and a SQLite trading journal through a FastAPI and React dashboard.",
+      "stack": [
+        "Python",
+        "LangGraph",
+        "FastAPI",
+        "React",
+        "IBKR API",
+        "SQLite",
+        "Quant Research"
+      ]
+    },
+    {
+      "id": "polymarket-btc-trading-engine-2026",
+      "section": "past",
+      "published": true,
+      "image": "/images/polymarket-trading-engine.webp",
+      "mediaType": "image",
+      "alt": "Conceptual dark dashboard illustration of BTC binary order books, fair value, and hedge execution",
+      "name": "Polymarket BTC Trading Engine",
+      "year": 2026,
+      "description": "Built an asynchronous Rust trading engine for Polymarket's five-minute BTC UP/DOWN markets. It combines Binance spot and Polymarket CLOB WebSocket data with a digital-option fair-value model, then manages paired limit orders through a dedicated state machine. The system reconciles partial fills, caps one-sided inventory, and reprices or hedges risk when package costs breach configured thresholds, with both authenticated live execution and realistic simulation modes.",
+      "stack": [
+        "Rust",
+        "Tokio",
+        "WebSockets",
+        "Polymarket CLOB",
+        "Algorithmic Trading",
+        "Quantitative Finance",
+        "Risk Management"
+      ]
+    },
+    {
       "id": "auto-bike-2025",
       "section": "past",
       "published": true,
