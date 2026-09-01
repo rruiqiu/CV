@@ -9,7 +9,7 @@ import Footer from '@/app/components/footer'
 import currentprojectlisting from '@/app/data/currentprojectlisting'
 
 const AboutPage = () => {
-  const [theme, setTheme] = useState<string>('Light')
+  const [theme, setTheme] = useState<string>('Dark')
   const [language, setLanguage] = useState<string>('En')
 
   // Callback function to update theme

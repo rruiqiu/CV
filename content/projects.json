@@ -20,7 +20,7 @@
       "alt": "TradingAgents Job History dashboard showing completed multi-ticker analysis runs and saved reports",
       "name": "Multi-Agent Trading Research Platform",
       "year": 2026,
-      "description": "Extended the open-source TradingAgents framework into a local, full-stack investment research workstation. A LangGraph pipeline coordinates market, sentiment, news, and fundamentals analysts, then stages bull/bear and risk debates before producing a structured portfolio decision. I added concurrent multi-ticker analysis, point-in-time backtests with isolated memory, persistent reports, read-only Interactive Brokers portfolio views, and a SQLite trading journal through a FastAPI and React dashboard.",
+      "description": "Reworked the open-source TradingAgents framework into a local investment research workstation. Externalized and refined its LangGraph prompts, improved evidence flow across analyst, bull/bear, trader, and risk stages, and added point-in-time guards, no-coverage abstention, and shared market context for more reliable decisions. The platform also supports concurrent multi-ticker research, isolated-memory backtests, persistent reports, IBKR portfolio views, and a FastAPI/React dashboard with a SQLite trading journal.",
       "stack": [
         "Python",
         "LangGraph",
