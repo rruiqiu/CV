@@ -5,6 +5,7 @@ import { useState } from 'react'
 import About from '@/app/components/about'
 import Project from '@/app/components/project'
 import CurrentProject from '@/app/components/currentproject'
+import Education from '@/app/components/education'
 import Footer from '@/app/components/footer'
 import currentprojectlisting from '@/app/data/currentprojectlisting'
 
@@ -42,6 +43,16 @@ const AboutPage = () => {
         />
         <section id="projects">
           <Project theme={theme} language={language} />
+        </section>
+        <hr
+          style={
+            theme === 'Light'
+              ? {}
+              : { border: '1px solid rgb(251 251 251 / 58%)' }
+          }
+        />
+        <section id="education">
+          <Education theme={theme} language={language} />
         </section>
         {/* <div>
           <Skills theme={theme} language={language} />

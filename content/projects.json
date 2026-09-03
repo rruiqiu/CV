@@ -10,6 +10,50 @@
       "body": "我专注于构建让软件交付和实际运营更加可靠的基础设施与应用。目前在 ArcTrade，我负责支持 300+ 个 AWS 微服务的 CI/CD 与平台工具；此前在 Veoneer，我开发过制造业和仓储软件，其中一套系统将订单周期缩短了 70%。我毕业于麦克马斯特大学电气工程专业，并将在 2027 年开始佐治亚理工学院的非全日制 OMSCS，计划专注于计算系统与机器学习。"
     }
   },
+  "education": {
+    "en": [
+      {
+        "id": "mcmaster-university",
+        "school": "McMaster University",
+        "degree": "Bachelor of Engineering in Electrical Engineering",
+        "period": "2020–2025",
+        "focus": "Computing Systems and Software Development",
+        "bullets": [
+          "Relevant Courses: Advanced Computer Network, Machine Learning, High Performance Copmuting, Computer Architecture, Data Structures & Algorithm, Operating Systems"
+        ]
+      },
+      {
+        "id": "georgia-institute-of-technology",
+        "school": "Georgia Institute of Technology",
+        "degree": "Online Master of Science in Computer Science (OMSCS)",
+        "period": "Starting 2027",
+        "focus": "Computing Systems and Machine Learning",
+        "bullets": []
+      }
+    ],
+    "zh": [
+      {
+        "id": "mcmaster-university",
+        "school": "麦克马斯特大学",
+        "degree": "电气工程工程学学士",
+        "period": "2020–2025",
+        "focus": "嵌入式系统、计算机体系结构与软件开发",
+        "bullets": [
+          "工程学学士 · 已完成"
+        ]
+      },
+      {
+        "id": "georgia-institute-of-technology",
+        "school": "佐治亚理工学院",
+        "degree": "计算机科学在线理学硕士（OMSCS）",
+        "period": "2027 年开始",
+        "focus": "计算系统与机器学习",
+        "bullets": [
+          "在线研究生项目 · 即将开始"
+        ]
+      }
+    ]
+  },
   "projects": [
     {
       "id": "multi-agent-trading-research-platform-2026",

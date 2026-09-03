@@ -5,6 +5,7 @@ const state = {
       en: { headline: '', body: '' },
       zh: { headline: '', body: '' },
     },
+    education: { en: [], zh: [] },
     projects: [],
   },
   activeView: 'introduction',
@@ -36,6 +37,10 @@ const elements = {
   description: document.querySelector('#description'),
   descriptionCount: document.querySelector('#description-count'),
   draftState: document.querySelector('#draft-state'),
+  educationEntry: document.querySelector('#education-entry'),
+  educationForm: document.querySelector('#education-form'),
+  educationPreviewCard: document.querySelector('#education-preview-card'),
+  educationPreviewContent: document.querySelector('#education-preview-content'),
   editorEyebrow: document.querySelector('#editor-eyebrow'),
   editorHeading: document.querySelector('#editor-heading'),
   fileInput: document.querySelector('#file-input'),
@@ -110,6 +115,26 @@ const introductionEditableFields = [
   elements.introductionZhBody,
 ]
 
+const educationFieldGroups = ['en', 'zh'].flatMap((locale) =>
+  [0, 1].map((index) => ({
+    locale,
+    index,
+    school: document.querySelector(`#education-${locale}-${index}-school`),
+    degree: document.querySelector(`#education-${locale}-${index}-degree`),
+    period: document.querySelector(`#education-${locale}-${index}-period`),
+    focus: document.querySelector(`#education-${locale}-${index}-focus`),
+    bullets: document.querySelector(`#education-${locale}-${index}-bullets`),
+  })),
+)
+
+const educationEditableFields = educationFieldGroups.flatMap((group) => [
+  group.school,
+  group.degree,
+  group.period,
+  group.focus,
+  group.bullets,
+])
+
 function selectedProject() {
   return state.content.projects.find((project) => project.id === state.selectedId) ?? null
 }
@@ -146,9 +171,12 @@ function updateControls() {
   const baseEnabled = state.loaded && !state.busy && !state.conflicted
   const projectEnabled = baseEnabled && state.activeView === 'project' && Boolean(project)
   const introductionEnabled = baseEnabled && state.activeView === 'introduction'
+  const educationEnabled = baseEnabled && state.activeView === 'education'
   for (const field of projectEditableFields) field.disabled = !projectEnabled
   for (const field of introductionEditableFields) field.disabled = !introductionEnabled
+  for (const field of educationEditableFields) field.disabled = !educationEnabled
   elements.introductionEntry.disabled = !state.loaded || state.busy
+  elements.educationEntry.disabled = !state.loaded || state.busy
   elements.add.disabled = !state.loaded || state.busy
   elements.delete.disabled = !projectEnabled
   elements.upload.disabled = !projectEnabled
@@ -197,6 +225,7 @@ function renderList() {
   const visibleProjects = filteredProjects()
 
   elements.introductionEntry.setAttribute('aria-current', state.activeView === 'introduction' ? 'page' : 'false')
+  elements.educationEntry.setAttribute('aria-current', state.activeView === 'education' ? 'page' : 'false')
   elements.count.textContent = String(state.content.projects.length)
   elements.list.replaceChildren()
 
@@ -265,13 +294,47 @@ function renderIntroductionPreview() {
   }
 }
 
+function renderEducationPreview() {
+  const entries = state.content.education[state.previewLanguage]
+  elements.educationPreviewContent.replaceChildren()
+  elements.educationPreviewContent.lang = state.previewLanguage === 'zh' ? 'zh-CN' : 'en'
+
+  for (const entry of entries) {
+    const article = document.createElement('article')
+    article.className = 'education-preview-entry'
+
+    const school = document.createElement('h3')
+    school.textContent = entry.school || 'School'
+    article.append(school)
+
+    const details = document.createElement('p')
+    details.textContent = [entry.degree, entry.period, entry.focus]
+      .filter(Boolean)
+      .join(' · ')
+    article.append(details)
+
+    if (entry.bullets.length) {
+      const bullets = document.createElement('ul')
+      for (const bullet of entry.bullets) {
+        const item = document.createElement('li')
+        item.textContent = bullet
+        bullets.append(item)
+      }
+      article.append(bullets)
+    }
+    elements.educationPreviewContent.append(article)
+  }
+}
+
 function renderIntroductionEditor() {
   const introduction = state.content.introduction
   elements.editorEyebrow.textContent = 'INTRODUCTION'
   elements.editorHeading.textContent = 'Profile introduction'
   elements.introductionForm.hidden = false
+  elements.educationForm.hidden = true
   elements.projectForm.hidden = true
   elements.introductionPreviewCard.hidden = false
+  elements.educationPreviewCard.hidden = true
   elements.projectPreviewCard.hidden = true
   elements.previewLanguage.hidden = false
   elements.previewEyebrow.textContent = 'LIVE INTRO'
@@ -282,6 +345,31 @@ function renderIntroductionEditor() {
   elements.introductionZhBody.value = introduction.zh.body
   updateIntroductionCounts()
   renderIntroductionPreview()
+  updateControls()
+}
+
+function renderEducationEditor() {
+  elements.editorEyebrow.textContent = 'EDUCATION'
+  elements.editorHeading.textContent = 'Education details'
+  elements.introductionForm.hidden = true
+  elements.educationForm.hidden = false
+  elements.projectForm.hidden = true
+  elements.introductionPreviewCard.hidden = true
+  elements.educationPreviewCard.hidden = false
+  elements.projectPreviewCard.hidden = true
+  elements.previewLanguage.hidden = false
+  elements.previewEyebrow.textContent = 'LIVE EDUCATION'
+
+  for (const group of educationFieldGroups) {
+    const entry = state.content.education[group.locale][group.index]
+    if (!entry) continue
+    group.school.value = entry.school
+    group.degree.value = entry.degree
+    group.period.value = entry.period
+    group.focus.value = entry.focus
+    group.bullets.value = entry.bullets.join('\n')
+  }
+  renderEducationPreview()
   updateControls()
 }
 
@@ -313,8 +401,10 @@ function renderEmptyEditor() {
   elements.editorEyebrow.textContent = 'PROJECT DETAILS'
   elements.editorHeading.textContent = 'No project selected'
   elements.introductionForm.hidden = true
+  elements.educationForm.hidden = true
   elements.projectForm.hidden = false
   elements.introductionPreviewCard.hidden = true
+  elements.educationPreviewCard.hidden = true
   elements.projectPreviewCard.hidden = false
   elements.previewLanguage.hidden = true
   elements.previewEyebrow.textContent = 'LIVE CARD'
@@ -337,6 +427,10 @@ function renderEditor() {
     renderIntroductionEditor()
     return
   }
+  if (state.activeView === 'education') {
+    renderEducationEditor()
+    return
+  }
 
   const project = selectedProject()
   if (!project) {
@@ -347,8 +441,10 @@ function renderEditor() {
   elements.editorEyebrow.textContent = 'PROJECT DETAILS'
   elements.editorHeading.textContent = project.name
   elements.introductionForm.hidden = true
+  elements.educationForm.hidden = true
   elements.projectForm.hidden = false
   elements.introductionPreviewCard.hidden = true
+  elements.educationPreviewCard.hidden = true
   elements.projectPreviewCard.hidden = false
   elements.previewLanguage.hidden = true
   elements.previewEyebrow.textContent = 'LIVE CARD'
@@ -371,6 +467,12 @@ function renderEditor() {
 
 function selectIntroduction() {
   state.activeView = 'introduction'
+  renderList()
+  renderEditor()
+}
+
+function selectEducation() {
+  state.activeView = 'education'
   renderList()
   renderEditor()
 }
@@ -401,6 +503,23 @@ function syncIntroductionFromForm() {
   updateIntroductionCounts()
   setDirty(true)
   renderIntroductionPreview()
+}
+
+function syncEducationFromForm() {
+  for (const group of educationFieldGroups) {
+    const entry = state.content.education[group.locale][group.index]
+    if (!entry) continue
+    entry.school = group.school.value
+    entry.degree = group.degree.value
+    entry.period = group.period.value
+    entry.focus = group.focus.value
+    entry.bullets = group.bullets.value
+      .split('\n')
+      .map((bullet) => bullet.trim())
+      .filter(Boolean)
+  }
+  setDirty(true)
+  renderEducationPreview()
 }
 
 function syncProjectFromForm(changedField) {
@@ -518,6 +637,24 @@ function contentForSave() {
         body: state.content.introduction.zh.body,
       },
     },
+    education: {
+      en: state.content.education.en.map((entry) => ({
+        id: entry.id,
+        school: entry.school,
+        degree: entry.degree,
+        period: entry.period,
+        focus: entry.focus,
+        bullets: entry.bullets,
+      })),
+      zh: state.content.education.zh.map((entry) => ({
+        id: entry.id,
+        school: entry.school,
+        degree: entry.degree,
+        period: entry.period,
+        focus: entry.focus,
+        bullets: entry.bullets,
+      })),
+    },
     projects: state.content.projects.map((project) => {
       const normalized = {
         id: project.id,
@@ -587,6 +724,19 @@ function revealValidationIssue(error) {
     return
   }
 
+  if (path.startsWith('education.')) {
+    state.activeView = 'education'
+    renderList()
+    renderEditor()
+    const educationMatch = /^education\.(en|zh)\[(\d+)\]\.([A-Za-z]+)$/.exec(path)
+    if (!educationMatch) return
+    const group = educationFieldGroups.find(
+      (candidate) => candidate.locale === educationMatch[1] && candidate.index === Number(educationMatch[2]),
+    )
+    focusAfterSave(group?.[educationMatch[3]])
+    return
+  }
+
   const projectMatch = /^projects\[(\d+)\](?:\.([A-Za-z]+))?/.exec(path)
   if (!projectMatch) return
   const project = state.content.projects[Number(projectMatch[1])]
@@ -628,7 +778,9 @@ async function saveProjects() {
   if (!state.dirty) return true
   const activeForm = state.activeView === 'introduction'
     ? elements.introductionForm
-    : elements.projectForm
+    : state.activeView === 'education'
+      ? elements.educationForm
+      : elements.projectForm
   if (!activeForm.reportValidity()) return false
 
   setBusy(true, 'Saving')
@@ -851,6 +1003,7 @@ elements.search.addEventListener('input', () => {
 })
 elements.add.addEventListener('click', addProject)
 elements.introductionEntry.addEventListener('click', selectIntroduction)
+elements.educationEntry.addEventListener('click', selectEducation)
 elements.delete.addEventListener('click', confirmDelete)
 elements.cancelDelete.addEventListener('click', () => elements.deleteDialog.close())
 elements.confirmDelete.addEventListener('click', deleteSelectedProject)
@@ -891,10 +1044,15 @@ for (const field of introductionEditableFields) {
   field.addEventListener('input', syncIntroductionFromForm)
 }
 
+for (const field of educationEditableFields) {
+  field.addEventListener('input', syncEducationFromForm)
+}
+
 for (const button of elements.previewLanguageButtons) {
   button.addEventListener('click', () => {
     state.previewLanguage = button.dataset.previewLanguage
-    renderIntroductionPreview()
+    if (state.activeView === 'education') renderEducationPreview()
+    else renderIntroductionPreview()
   })
 }
 

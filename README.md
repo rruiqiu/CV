@@ -91,7 +91,7 @@ The project manager runs only on your computer. It is not included in the GitHub
    ```
 
 2. Open http://127.0.0.1:4173.
-3. Edit the bilingual introduction, or add, edit, reorder, and hide projects and upload project media.
+3. Edit the bilingual introduction and education entries, or add, edit, reorder, and hide projects and upload project media.
 4. Choose **Save locally** to validate and write `content/projects.json`.
 5. Choose **Publish** to review the Git plan, commit only portfolio content/media, and push to `main`. The existing GitHub Action then rebuilds the static site and deploys it to GitHub Pages.
 

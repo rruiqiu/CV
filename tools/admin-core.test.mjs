@@ -25,6 +25,44 @@ const validContent = {
       body: '我专注于构建让软件交付和实际运营更加可靠的基础设施与应用。',
     },
   },
+  education: {
+    en: [
+      {
+        id: 'mcmaster-university',
+        school: 'McMaster University',
+        degree: 'Bachelor of Engineering in Electrical Engineering',
+        period: '2020–2025',
+        focus: 'Embedded Systems and Software Development',
+        bullets: ['Bachelor of Engineering · Completed'],
+      },
+      {
+        id: 'georgia-institute-of-technology',
+        school: 'Georgia Institute of Technology',
+        degree: 'Online Master of Science in Computer Science (OMSCS)',
+        period: 'Starting 2027',
+        focus: 'Computing Systems and Machine Learning',
+        bullets: ['Online graduate program · Incoming'],
+      },
+    ],
+    zh: [
+      {
+        id: 'mcmaster-university',
+        school: '麦克马斯特大学',
+        degree: '电气工程工程学学士',
+        period: '2020–2025',
+        focus: '嵌入式系统与软件开发',
+        bullets: ['工程学学士 · 已完成'],
+      },
+      {
+        id: 'georgia-institute-of-technology',
+        school: '佐治亚理工学院',
+        degree: '计算机科学在线理学硕士（OMSCS）',
+        period: '2027 年开始',
+        focus: '计算系统与机器学习',
+        bullets: ['在线研究生项目 · 即将开始'],
+      },
+    ],
+  },
   projects: [
     {
       id: 'sample-project-2026',

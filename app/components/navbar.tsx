@@ -85,6 +85,17 @@ const navbar: React.FC<navbarprops> = (props) => {
                     ? style.linkStyle
                     : style.linkStyleDark
                 }
+                href={'#education'}>
+                Education
+              </Link>
+            </li>
+            <li className={style.liclass}>
+              <Link
+                className={
+                  props.darkmode === 'Light'
+                    ? style.linkStyle
+                    : style.linkStyleDark
+                }
                 href={
                   'https://drive.google.com/file/d/1Lb9H5k3H7RmzQhuHzXHhKdEGrurhTkdE/view?usp=drive_link'
                 }

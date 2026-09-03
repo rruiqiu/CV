@@ -579,13 +579,15 @@ textarea:focus {
 }
 
 #project-form,
-#introduction-form {
+#introduction-form,
+#education-form {
   display: grid;
   gap: 20px;
 }
 
 #project-form label,
-#introduction-form label {
+#introduction-form label,
+#education-form label {
   display: grid;
   gap: 8px;
   color: #c8d0d7;
@@ -628,6 +630,32 @@ textarea:focus {
   background: #182129;
   font-size: 0.68rem;
   font-weight: 700;
+}
+
+.education-editor-entry {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: rgb(16 20 24 / 70%);
+}
+
+.education-editor-entry + .education-editor-entry {
+  margin-top: 12px;
+}
+
+.education-editor-entry legend {
+  padding: 0 6px;
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.education-editor-entry textarea {
+  min-height: 90px;
 }
 
 .form-row {
@@ -813,6 +841,52 @@ textarea:focus {
   font-size: 0.78rem;
   line-height: 1.62;
   white-space: pre-wrap;
+}
+
+.education-preview-card {
+  padding: 22px;
+  border: 1px solid #343b42;
+  border-radius: 15px;
+  color: #eef2f5;
+  background: #111417;
+  box-shadow: 0 24px 50px rgb(0 0 0 / 25%);
+}
+
+.preview-kicker {
+  margin-bottom: 18px;
+  color: var(--accent-strong);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.education-preview-entry + .education-preview-entry {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #343b42;
+}
+
+.education-preview-entry h3 {
+  margin: 0 0 6px;
+  color: #f5f7f8;
+  font-size: 1.02rem;
+  line-height: 1.35;
+}
+
+.education-preview-entry p,
+.education-preview-entry ul {
+  color: #bfc8cf;
+  font-size: 0.78rem;
+  line-height: 1.52;
+}
+
+.education-preview-entry p {
+  margin: 0;
+}
+
+.education-preview-entry ul {
+  margin: 9px 0 0;
+  padding-left: 18px;
 }
 
 .preview-media {

@@ -14,6 +14,20 @@ export interface PortfolioIntroduction {
   zh: PortfolioIntroductionCopy
 }
 
+export interface PortfolioEducationEntry {
+  id: string
+  school: string
+  degree: string
+  period: string
+  focus: string
+  bullets: string[]
+}
+
+export interface PortfolioEducation {
+  en: PortfolioEducationEntry[]
+  zh: PortfolioEducationEntry[]
+}
+
 export interface PortfolioProject {
   id: string
   section: ProjectSection
@@ -33,6 +47,8 @@ export interface PortfolioProject {
 const projects = portfolioContent.projects as PortfolioProject[]
 
 export const introduction = portfolioContent.introduction as PortfolioIntroduction
+
+export const education = portfolioContent.education as PortfolioEducation
 
 export const pastProjects = projects.filter(
   (project) => project.published && project.section === 'past',

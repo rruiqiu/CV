@@ -42,6 +42,14 @@
           </span>
           <span aria-hidden="true">›</span>
         </button>
+        <button class="content-entry" id="education-entry" type="button" aria-current="false" disabled>
+          <span class="content-entry-mark" aria-hidden="true">ED</span>
+          <span class="content-entry-copy">
+            <strong>Education</strong>
+            <span>Schools, degrees, and academic details</span>
+          </span>
+          <span aria-hidden="true">›</span>
+        </button>
         <div class="content-subheading">
           <h3>Projects</h3>
           <span class="count" id="project-count">—</span>
@@ -115,6 +123,128 @@
               <textarea id="introduction-zh-body" name="introductionZhBody" rows="8" maxlength="4000" required disabled></textarea>
               <span class="field-note"><span id="introduction-zh-body-count">0</span> / 4000</span>
             </label>
+          </section>
+        </form>
+
+        <form id="education-form" hidden>
+          <section class="language-block" aria-labelledby="english-education-heading" lang="en">
+            <div class="language-heading">
+              <div>
+                <p class="eyebrow">ENGLISH</p>
+                <h3 id="english-education-heading">Education entries</h3>
+              </div>
+              <span>EN</span>
+            </div>
+            <fieldset class="education-editor-entry">
+              <legend>School 1</legend>
+              <label>
+                School
+                <input id="education-en-0-school" type="text" maxlength="140" required disabled />
+              </label>
+              <label>
+                Degree or program
+                <input id="education-en-0-degree" type="text" maxlength="240" required disabled />
+              </label>
+              <div class="form-row">
+                <label>
+                  Period
+                  <input id="education-en-0-period" type="text" maxlength="80" required disabled />
+                </label>
+                <label>
+                  Focus
+                  <input id="education-en-0-focus" type="text" maxlength="300" required disabled />
+                </label>
+              </div>
+              <label>
+                Highlights
+                <textarea id="education-en-0-bullets" rows="3" maxlength="2000" placeholder="One highlight per line" disabled></textarea>
+              </label>
+            </fieldset>
+            <fieldset class="education-editor-entry">
+              <legend>School 2</legend>
+              <label>
+                School
+                <input id="education-en-1-school" type="text" maxlength="140" required disabled />
+              </label>
+              <label>
+                Degree or program
+                <input id="education-en-1-degree" type="text" maxlength="240" required disabled />
+              </label>
+              <div class="form-row">
+                <label>
+                  Period
+                  <input id="education-en-1-period" type="text" maxlength="80" required disabled />
+                </label>
+                <label>
+                  Focus
+                  <input id="education-en-1-focus" type="text" maxlength="300" required disabled />
+                </label>
+              </div>
+              <label>
+                Highlights
+                <textarea id="education-en-1-bullets" rows="3" maxlength="2000" placeholder="One highlight per line" disabled></textarea>
+              </label>
+            </fieldset>
+          </section>
+
+          <section class="language-block" aria-labelledby="chinese-education-heading" lang="zh-CN">
+            <div class="language-heading">
+              <div>
+                <p class="eyebrow">中文</p>
+                <h3 id="chinese-education-heading">教育经历</h3>
+              </div>
+              <span>中</span>
+            </div>
+            <fieldset class="education-editor-entry">
+              <legend>学校 1</legend>
+              <label>
+                学校
+                <input id="education-zh-0-school" type="text" maxlength="140" required disabled />
+              </label>
+              <label>
+                学位或项目
+                <input id="education-zh-0-degree" type="text" maxlength="240" required disabled />
+              </label>
+              <div class="form-row">
+                <label>
+                  时间
+                  <input id="education-zh-0-period" type="text" maxlength="80" required disabled />
+                </label>
+                <label>
+                  方向
+                  <input id="education-zh-0-focus" type="text" maxlength="300" required disabled />
+                </label>
+              </div>
+              <label>
+                亮点
+                <textarea id="education-zh-0-bullets" rows="3" maxlength="2000" placeholder="每行填写一条" disabled></textarea>
+              </label>
+            </fieldset>
+            <fieldset class="education-editor-entry">
+              <legend>学校 2</legend>
+              <label>
+                学校
+                <input id="education-zh-1-school" type="text" maxlength="140" required disabled />
+              </label>
+              <label>
+                学位或项目
+                <input id="education-zh-1-degree" type="text" maxlength="240" required disabled />
+              </label>
+              <div class="form-row">
+                <label>
+                  时间
+                  <input id="education-zh-1-period" type="text" maxlength="80" required disabled />
+                </label>
+                <label>
+                  方向
+                  <input id="education-zh-1-focus" type="text" maxlength="300" required disabled />
+                </label>
+              </div>
+              <label>
+                亮点
+                <textarea id="education-zh-1-bullets" rows="3" maxlength="2000" placeholder="每行填写一条" disabled></textarea>
+              </label>
+            </fieldset>
           </section>
         </form>
 
@@ -243,6 +373,10 @@
               <ul id="preview-stack"></ul>
               <div class="preview-links" id="preview-links"></div>
             </div>
+          </article>
+          <article class="education-preview-card" id="education-preview-card" hidden>
+            <p class="preview-kicker">EDUCATION</p>
+            <div id="education-preview-content"></div>
           </article>
         </div>
         <div class="preview-note">

@@ -19,6 +19,8 @@ const projectKeys = new Set([
 
 const introductionKeys = new Set(['en', 'zh'])
 const introductionLocaleKeys = new Set(['body', 'headline'])
+const educationKeys = new Set(['en', 'zh'])
+const educationEntryKeys = new Set(['bullets', 'degree', 'focus', 'id', 'period', 'school'])
 
 export class ContentValidationError extends Error {
   constructor(issues) {
@@ -124,6 +126,70 @@ function validateIntroduction(value, issues) {
   }
 }
 
+function validateEducationEntry(value, locale, index, issues) {
+  const path = `education.${locale}[${index}]`
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    addIssue(issues, path, 'Must be an object.')
+    return null
+  }
+
+  for (const key of Object.keys(value)) {
+    if (!educationEntryKeys.has(key)) addIssue(issues, `${path}.${key}`, 'Unknown field.')
+  }
+
+  const id = requiredString(value.id, `${path}.id`, issues, 80)
+  if (id && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) {
+    addIssue(issues, `${path}.id`, 'Use lowercase letters, numbers, and single hyphens.')
+  }
+
+  const school = requiredString(value.school, `${path}.school`, issues, 140)
+  const degree = requiredString(value.degree, `${path}.degree`, issues, 240)
+  const period = requiredString(value.period, `${path}.period`, issues, 80)
+  const focus = requiredString(value.focus, `${path}.focus`, issues, 300)
+  const bullets = []
+  if (!Array.isArray(value.bullets) || value.bullets.length > 8) {
+    addIssue(issues, `${path}.bullets`, 'Must be an array with no more than 8 items.')
+  } else {
+    for (let bulletIndex = 0; bulletIndex < value.bullets.length; bulletIndex += 1) {
+      bullets.push(requiredString(value.bullets[bulletIndex], `${path}.bullets[${bulletIndex}]`, issues, 240))
+    }
+  }
+
+  return { id, school, degree, period, focus, bullets }
+}
+
+function validateEducationLocale(value, locale, issues) {
+  const path = `education.${locale}`
+  if (!Array.isArray(value) || value.length !== 2) {
+    addIssue(issues, path, 'Must be an array with exactly 2 entries.')
+    return []
+  }
+
+  const entries = value.map((entry, index) => validateEducationEntry(entry, locale, index, issues)).filter(Boolean)
+  const seenIds = new Set()
+  for (const entry of entries) {
+    if (seenIds.has(entry.id)) addIssue(issues, path, `Duplicate id: ${entry.id}`)
+    seenIds.add(entry.id)
+  }
+  return entries
+}
+
+function validateEducation(value, issues) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    addIssue(issues, 'education', 'Must be an object.')
+    return { en: [], zh: [] }
+  }
+
+  for (const key of Object.keys(value)) {
+    if (!educationKeys.has(key)) addIssue(issues, `education.${key}`, 'Unknown field.')
+  }
+
+  return {
+    en: validateEducationLocale(value.en, 'en', issues),
+    zh: validateEducationLocale(value.zh, 'zh', issues),
+  }
+}
+
 function validateProject(value, index, issues) {
   const path = `projects[${index}]`
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -224,13 +290,14 @@ export function validateContent(value) {
   }
 
   for (const key of Object.keys(value)) {
-    if (key !== 'version' && key !== 'introduction' && key !== 'projects') {
+    if (key !== 'version' && key !== 'introduction' && key !== 'education' && key !== 'projects') {
       addIssue(issues, key, 'Unknown field.')
     }
   }
 
   if (value.version !== 2) addIssue(issues, 'version', 'Must be 2.')
   const introduction = validateIntroduction(value.introduction, issues)
+  const education = validateEducation(value.education, issues)
   if (!Array.isArray(value.projects) || value.projects.length > 100) {
     addIssue(issues, 'projects', 'Must be an array with no more than 100 projects.')
   }
@@ -245,7 +312,7 @@ export function validateContent(value) {
   }
 
   if (issues.length) throw new ContentValidationError(issues)
-  return { version: 2, introduction, projects }
+  return { version: 2, introduction, education, projects }
 }
 
 export function serializeContent(content) {
