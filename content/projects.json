@@ -73,7 +73,9 @@
         "IBKR API",
         "SQLite",
         "Quant Research"
-      ]
+      ],
+      "demo": "https://dqbiyhu9fc151.cloudfront.net/#/demo",
+      "demoType": "external"
     },
     {
       "id": "polymarket-btc-trading-engine-2026",
