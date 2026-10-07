@@ -808,6 +808,9 @@ textarea:focus {
 
 .photo-editor-controls { display: grid; gap: 10px; min-width: 0; }
 .photo-editor-controls label { display: flex !important; justify-content: space-between; }
+#profile-custom-resolution-field { display: grid !important; }
+#profile-custom-resolution-field[hidden] { display: none !important; }
+#profile-custom-resolution { width: 100%; min-width: 0; }
 .photo-editor-controls input[type="range"] { width: 100%; min-width: 0; padding: 0; accent-color: var(--accent-strong); }
 .photo-zoom-row { display: flex; align-items: center; gap: 8px; }
 .photo-zoom-row .icon-button { flex-shrink: 0; }

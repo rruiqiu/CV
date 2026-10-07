@@ -94,6 +94,20 @@ test('profile upload and framing save to disk with conflict checks and publish r
       method: 'PUT', headers: { ...headers, 'If-Match': etag, 'Content-Type': 'application/json' },
       body: JSON.stringify(profile),
     })
+    const filesBeforePreview = await readdir(join(directory, 'public/images'))
+    const contentBeforePreview = await readFile(contentPath, 'utf8')
+    for (const resolution of [600, 700, 800]) {
+      const preview = await fetch(`${origin}/api/profile-preview`, {
+        method: 'POST', headers: { ...headers, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...framing, resolution }),
+      })
+      assert.equal(preview.status, 200)
+      assert.equal(preview.headers.get('content-type'), 'image/webp')
+      const size = await sharp(Buffer.from(await preview.arrayBuffer())).metadata()
+      assert.equal(Math.max(size.width, size.height), resolution)
+    }
+    assert.deepEqual(await readdir(join(directory, 'public/images')), filesBeforePreview, 'Previewing never writes image files')
+    assert.equal(await readFile(contentPath, 'utf8'), contentBeforePreview, 'Previewing never changes saved settings')
     const originalBytes = await readFile(join(directory, `public${uploaded.profile.sourceImage}`))
     const resizedResponse = await updateProfile({ ...framing, resolution: 512 }, saved.etag)
     assert.equal(resizedResponse.status, 200)
@@ -124,7 +138,7 @@ test('profile upload and framing save to disk with conflict checks and publish r
 
     // Save locally can race the auto-save timer; the full-content route also materializes resolution changes.
     const nextContent = JSON.parse(await readFile(contentPath, 'utf8'))
-    nextContent.profile.resolution = 256
+    nextContent.profile.resolution = 736
     const fullSave = await fetch(`${origin}/api/projects`, {
       method: 'PUT', headers: { ...headers, 'If-Match': restored.etag, 'Content-Type': 'application/json' },
       body: JSON.stringify(nextContent),
@@ -132,7 +146,56 @@ test('profile upload and framing save to disk with conflict checks and publish r
     assert.equal(fullSave.status, 200)
     const fullSaved = await fullSave.json()
     const smaller = await sharp(await readFile(join(directory, `public${fullSaved.content.profile.image}`))).metadata()
-    assert.equal(Math.max(smaller.width, smaller.height), 256)
+    assert.equal(Math.max(smaller.width, smaller.height), 736)
+    const customResponse = await updateProfile({ ...fullSaved.content.profile, resolution: 700 }, fullSaved.etag)
+    assert.equal(customResponse.status, 200)
+    const custom = await customResponse.json()
+    const customSize = await sharp(await readFile(join(directory, `public${custom.profile.image}`))).metadata()
+    assert.equal(Math.max(customSize.width, customSize.height), 700)
+    assert.equal((await (await fetch(`${origin}/api/projects`)).json()).profile.resolution, 700)
+
+    // Keep one old generated image used by a project, plus another used in an unsaved draft.
+    const withProject = JSON.parse(await readFile(contentPath, 'utf8'))
+    withProject.projects = [{ id: 'photo-project', section: 'past', published: true, image: fullSaved.content.profile.image,
+      mediaType: 'image', alt: 'Photo project', name: 'Photo project', year: 2026, description: 'Uses a generated image.', stack: ['Photo'] }]
+    const withProjectResponse = await fetch(`${origin}/api/projects`, {
+      method: 'PUT', headers: { ...headers, 'If-Match': custom.etag, 'Content-Type': 'application/json' },
+      body: JSON.stringify(withProject),
+    })
+    assert.equal(withProjectResponse.status, 200)
+    const projectSaved = await withProjectResponse.json()
+    const oldVersion = '/images/profile-11111111-1111-4111-8111-111111111111-900.webp'
+    await writeFile(join(directory, `public${oldVersion}`), resizedBytes)
+    await execFileAsync('git', ['add', '--', `public${oldVersion}`], { cwd: directory, windowsHide: true })
+    await execFileAsync('git', ['-c', 'user.name=Test', '-c', 'user.email=test@example.com', 'commit', '--only', '-m', 'old photo fixture', '--', `public${oldVersion}`], { cwd: directory, windowsHide: true })
+    await writeFile(join(directory, 'public/images/unrelated.webp'), resizedBytes)
+    await writeFile(join(directory, 'public/images/profile-manual-900.webp'), resizedBytes)
+    const cleanup = (retainImages, etag = projectSaved.etag) => fetch(`${origin}/api/profile-cleanup`, {
+      method: 'POST', headers: { ...headers, 'If-Match': etag, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ retainImages }),
+    })
+    assert.equal((await cleanup([], custom.etag)).status, 409)
+    assert.equal((await cleanup(['/images/../secret.webp'])).status, 422)
+    const cleanedResponse = await cleanup([resized.profile.image])
+    assert.equal(cleanedResponse.status, 200)
+    const cleaned = await cleanedResponse.json()
+    assert.ok(cleaned.removed.includes(oldVersion))
+    assert.ok(!cleaned.removed.includes(custom.profile.image))
+    assert.ok(!cleaned.removed.includes(fullSaved.content.profile.image))
+    assert.ok(!cleaned.removed.includes(resized.profile.image))
+    assert.deepEqual(await readFile(join(directory, `public${uploaded.profile.sourceImage}`)), originalBytes)
+    const remaining = await readdir(join(directory, 'public/images'))
+    assert.ok(remaining.includes('profile.jpg'))
+    assert.ok(remaining.includes('unrelated.webp'))
+    assert.ok(remaining.includes('profile-manual-900.webp'))
+    assert.ok(!remaining.includes(oldVersion.slice('/images/'.length)))
+    const cleanupPlan = await (await fetch(`${origin}/api/publish-plan`, { headers: { 'X-Admin-Token': token } })).json()
+    assert.ok(cleanupPlan.publishPaths.includes(`public${oldVersion}`), 'The publish plan includes removal of tracked old versions')
+    assert.ok(cleanupPlan.allowedChanges.some((change) => change.includes(oldVersion.slice('/images/'.length))))
+    assert.equal(cleanupPlan.blockers.length, 0)
+    const finalCleanup = await (await cleanup([])).json()
+    assert.ok(finalCleanup.removed.includes(resized.profile.image))
+    assert.equal((await (await cleanup([])).json()).removed.length, 0)
   } finally {
     if (server && server.exitCode === null) {
       server.kill()

@@ -62,15 +62,17 @@ test('validates photo framing and rejects unsafe profile media', () => {
     { image: '/images/../selfie.jpg' }, { image: 'https://example.com/selfie.jpg' },
     { image: '/images/selfie.mp4' }, { zoom: 0.9 }, { zoom: 3.1 },
     { x: -1 }, { y: 101 }, { zoom: '2' }, { x: NaN }, { unexpected: true },
-    { resolution: 300 }, { resolution: '512' }, { sourceImage: '/images/../secret.jpg' },
+    { resolution: -1 }, { resolution: 8193 }, { resolution: 700.5 }, { resolution: '512' }, { sourceImage: '/images/../secret.jpg' },
   ]) {
     assert.throws(() => validateProfile({ ...profile, ...invalid }), ContentValidationError)
   }
 })
 
 test('accepts reduced resolution while preserving the original image', () => {
-  const profile = { ...defaultProfile, image: '/images/reduced.webp', resolution: 512 }
-  assert.deepEqual(validateProfile(profile), profile)
+  for (const resolution of [1, 112, 124, 500, 512, 700, 736, 8192]) {
+    const profile = { ...defaultProfile, image: '/images/reduced.webp', resolution }
+    assert.deepEqual(validateProfile(profile), profile)
+  }
 })
 
 test('repository project content matches the local admin schema', async () => {

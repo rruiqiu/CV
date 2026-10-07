@@ -19,7 +19,13 @@ const state = {
   publishPlanId: null,
   loaded: false,
   profileDirty: false,
-  profileSaveTimer: null,
+  profilePreviewTimer: null,
+  profilePreviewGeneration: 0,
+  profilePreviewBusy: false,
+  profilePreviewUrl: null,
+  profilePreviewResolution: null,
+  savedProfile: null,
+  profileCustomResolution: false,
 }
 
 const elements = {
@@ -103,6 +109,11 @@ const elements = {
   profilePath: document.querySelector('#profile-path'),
   profileResolution: document.querySelector('#profile-resolution'),
   profileDimensions: document.querySelector('#profile-dimensions'),
+  profileCustomResolution: document.querySelector('#profile-custom-resolution'),
+  profileCustomResolutionField: document.querySelector('#profile-custom-resolution-field'),
+  profileApply: document.querySelector('#profile-apply'),
+  profileDiscard: document.querySelector('#profile-discard'),
+  profileCleanup: document.querySelector('#profile-cleanup'),
 }
 
 const projectEditableFields = [
@@ -167,9 +178,12 @@ function updateControls() {
   for (const field of introductionEditableFields) field.disabled = !introductionEnabled
   for (const field of [elements.profileUpload, elements.profileFile, elements.profileZoom,
     elements.profileZoomIn, elements.profileZoomOut, elements.profileX, elements.profileY,
-    elements.profileReset, elements.profileResolution]) field.disabled = !introductionEnabled
+    elements.profileReset, elements.profileResolution, elements.profileCustomResolution]) field.disabled = !introductionEnabled
   elements.profileZoomOut.disabled = !introductionEnabled || state.content.profile?.zoom <= 1
   elements.profileZoomIn.disabled = !introductionEnabled || state.content.profile?.zoom >= 3
+  elements.profileApply.disabled = !introductionEnabled || !state.profileDirty
+  elements.profileDiscard.disabled = !introductionEnabled || !state.profileDirty
+  elements.profileCleanup.disabled = !introductionEnabled
   elements.introductionEntry.disabled = !state.loaded || state.busy
   elements.add.disabled = !state.loaded || state.busy
   elements.delete.disabled = !projectEnabled
@@ -296,8 +310,9 @@ function profileStatus(message, tone = 'neutral') {
 function renderProfile() {
   const profile = state.content.profile
   if (!profile) return
+  const src = profile.resolution === 0 ? profile.sourceImage : state.profilePreviewUrl || profile.image
   for (const image of [elements.profileEditorImage, elements.profilePreviewImage]) {
-    if (image.getAttribute('src') !== profile.image) image.src = profile.image
+    if (image.getAttribute('src') !== src) image.src = src
     image.style.objectPosition = `${profile.x}% ${profile.y}%`
     image.style.transform = `scale(${profile.zoom})`
     image.style.transformOrigin = `${profile.x}% ${profile.y}%`
@@ -306,34 +321,145 @@ function renderProfile() {
   elements.profileZoomValue.textContent = `${Math.round(profile.zoom * 100)}%`
   elements.profileX.value = String(profile.x)
   elements.profileY.value = String(profile.y)
-  elements.profileResolution.value = String(profile.resolution ?? 0)
+  const resolution = profile.resolution ?? 0
+  const custom = state.profileCustomResolution || ![0, 256, 512, 1024].includes(resolution)
+  elements.profileResolution.value = custom ? 'custom' : String(resolution)
+  elements.profileCustomResolutionField.hidden = !custom
+  elements.profileCustomResolution.required = custom
+  if (document.activeElement !== elements.profileCustomResolution) {
+    elements.profileCustomResolution.value = String(resolution || 700)
+  }
   elements.profilePath.textContent = profile.image
 }
 
-function queueProfileSave() {
-  window.clearTimeout(state.profileSaveTimer)
-  state.profileSaveTimer = window.setTimeout(async () => {
-    if (state.busy) { queueProfileSave(); return }
-    if (!state.profileDirty || state.conflicted || !state.loaded) return
-    await saveProfile()
-  }, 650)
+function clearProfilePreview() {
+  window.clearTimeout(state.profilePreviewTimer)
+  state.profilePreviewGeneration += 1
+  if (state.profilePreviewUrl) URL.revokeObjectURL(state.profilePreviewUrl)
+  state.profilePreviewUrl = null
+  state.profilePreviewResolution = null
+}
+
+function queueProfilePreview() {
+  window.clearTimeout(state.profilePreviewTimer)
+  const generation = ++state.profilePreviewGeneration
+  const resolution = state.content.profile.resolution
+  if (resolution === 0 || resolution === state.savedProfile?.resolution) {
+    clearProfilePreview()
+    renderProfile()
+    return
+  }
+  if (state.profilePreviewUrl && state.profilePreviewResolution === resolution) return
+  state.profilePreviewTimer = window.setTimeout(() => previewProfile(generation), 350)
+}
+
+async function previewProfile(generation) {
+  if (generation !== state.profilePreviewGeneration || !state.profileDirty || !state.loaded) return
+  if (state.profilePreviewBusy || state.busy) {
+    state.profilePreviewTimer = window.setTimeout(() => previewProfile(generation), 150)
+    return
+  }
+  state.profilePreviewBusy = true
+  profileStatus('Preparing preview…')
+  const profile = { ...state.content.profile }
+  let previewUrl
+  try {
+    const response = await fetch('/api/profile-preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Token': state.token },
+      body: JSON.stringify(profile),
+    })
+    if (!response.ok) {
+      const body = await response.json()
+      throw new Error(body.error || 'Photo preview failed.')
+    }
+    previewUrl = URL.createObjectURL(await response.blob())
+    const image = new Image()
+    image.src = previewUrl
+    await image.decode()
+    if (generation !== state.profilePreviewGeneration || !state.profileDirty) return
+    if (state.profilePreviewUrl) URL.revokeObjectURL(state.profilePreviewUrl)
+    state.profilePreviewUrl = previewUrl
+    state.profilePreviewResolution = profile.resolution
+    previewUrl = null
+    renderProfile()
+    profileStatus('Preview only · Apply to save')
+  } catch (error) {
+    if (generation === state.profilePreviewGeneration) {
+      profileStatus('Preview failed', 'error')
+      setStatus(errorMessage(error), 'error')
+    }
+  } finally {
+    if (previewUrl) URL.revokeObjectURL(previewUrl)
+    state.profilePreviewBusy = false
+  }
+}
+
+function discardProfilePreview() {
+  clearProfilePreview()
+  state.content.profile = { ...state.savedProfile }
+  state.profileDirty = false
+  state.profileCustomResolution = false
+  renderProfile()
+  profileStatus('Saved locally', 'success')
+  setDirty(state.dirty)
+}
+
+async function removeUnusedProfileVersions() {
+  const paths = new Set([state.content.profile.image, state.content.profile.sourceImage])
+  for (const project of state.content.projects) {
+    paths.add(project.image)
+    if (project.demoType === 'video' && project.demo) paths.add(project.demo)
+  }
+  try {
+    const { body } = await apiJson('/api/profile-cleanup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Token': state.token, 'If-Match': state.etag },
+      body: JSON.stringify({ retainImages: [...paths].filter((path) => path?.startsWith('/images/')) }),
+    })
+    return body.removed.length
+  } catch (error) {
+    setStatus(`Cleanup could not finish. Your saved photo is kept. ${errorMessage(error)}`, 'error')
+    return null
+  }
+}
+
+async function cleanupProfileVersions() {
+  if (state.busy || state.conflicted || !state.loaded) return
+  setBusy(true, 'Cleaning up')
+  try {
+    const removed = await removeUnusedProfileVersions()
+    if (removed !== null) setStatus(`Removed ${removed} unused photo version(s). Current photo, originals and project media are kept.`, 'success')
+  } finally {
+    setBusy(false)
+  }
 }
 
 function changeFraming() {
+  const custom = elements.profileResolution.value === 'custom'
+  if (custom && (!elements.profileCustomResolution.value || !elements.profileCustomResolution.checkValidity())) {
+    window.clearTimeout(state.profilePreviewTimer)
+    state.profilePreviewGeneration += 1
+    profileStatus('Enter 1–8192 whole pixels', 'error')
+    return false
+  }
   state.content.profile.zoom = Number(elements.profileZoom.value)
   state.content.profile.x = Number(elements.profileX.value)
   state.content.profile.y = Number(elements.profileY.value)
-  state.content.profile.resolution = Number(elements.profileResolution.value)
-  state.profileDirty = true
-  profileStatus('Waiting to save…')
+  state.content.profile.resolution = Number(custom ? elements.profileCustomResolution.value : elements.profileResolution.value)
+  state.profileDirty = ['resolution', 'zoom', 'x', 'y'].some((key) => state.content.profile[key] !== state.savedProfile?.[key])
+  profileStatus(state.profileDirty ? 'Preview only · Apply to save' : 'Saved locally')
   renderProfile()
   setDirty(state.dirty)
-  queueProfileSave()
+  queueProfilePreview()
+  return true
 }
 
 async function saveProfile(file) {
   if (state.busy || state.conflicted || !state.loaded) return false
-  window.clearTimeout(state.profileSaveTimer)
+  if (!file && elements.profileResolution.value === 'custom' && !elements.profileCustomResolution.reportValidity()) return false
+  window.clearTimeout(state.profilePreviewTimer)
+  state.profilePreviewGeneration += 1
   const focusedField = document.activeElement
   setBusy(true, file ? 'Uploading photo' : 'Saving photo')
   profileStatus(file ? 'Uploading…' : 'Saving…')
@@ -348,12 +474,15 @@ async function saveProfile(file) {
       body: file || JSON.stringify(state.content.profile),
     })
     state.content.profile = body.profile
+    state.savedProfile = { ...body.profile }
+    clearProfilePreview()
     state.etag = response.headers.get('ETag') || body.etag
     state.profileDirty = false
     renderProfile()
     setDirty(state.dirty)
     profileStatus('Saved locally', 'success')
-    setStatus('Photo and framing saved to this project. Publish when you are ready to update the live site.', 'success')
+    const removed = await removeUnusedProfileVersions()
+    if (removed !== null) setStatus(`Photo saved. Removed ${removed} unused photo version(s). Publish when ready.`, 'success')
     return true
   } catch (error) {
     profileStatus('Not saved · Try again', 'error')
@@ -753,7 +882,8 @@ async function saveProjects() {
     return false
   }
   if (!state.dirty && !state.profileDirty) return true
-  window.clearTimeout(state.profileSaveTimer)
+  window.clearTimeout(state.profilePreviewTimer)
+  state.profilePreviewGeneration += 1
   const activeForm = state.activeView === 'introduction'
     ? elements.introductionForm
     : elements.projectForm
@@ -772,6 +902,8 @@ async function saveProjects() {
       body: JSON.stringify(contentForSave()),
     })
     state.content = body.content
+    state.savedProfile = { ...body.content.profile }
+    clearProfilePreview()
     state.etag = response.headers.get('ETag') || body.etag
     state.conflicted = false
     state.profileDirty = false
@@ -780,7 +912,8 @@ async function saveProjects() {
     setDirty(false)
     renderList()
     renderEditor()
-    setStatus('Saved locally. Publish when you are ready to update GitHub Pages.', 'success')
+    const removed = await removeUnusedProfileVersions()
+    if (removed !== null) setStatus(`Saved locally. Removed ${removed} unused photo version(s). Publish when ready.`, 'success')
     return true
   } catch (error) {
     setStatus(errorMessage(error), 'error')
@@ -940,6 +1073,9 @@ async function loadWorkspace() {
     state.token = sessionResult.body.token
     state.etag = projectsResponse.headers.get('ETag')
     state.content = await projectsResponse.json()
+    state.savedProfile = { ...state.content.profile }
+    clearProfilePreview()
+    state.profileCustomResolution = false
     state.profileDirty = false
     profileStatus('Saved locally', 'success')
     state.loaded = true
@@ -967,7 +1103,7 @@ async function loadWorkspace() {
 async function reloadWorkspace() {
   if (state.busy) return
   if ((state.dirty || state.profileDirty) && !window.confirm('Discard the current local draft and reload projects from disk?')) return
-  window.clearTimeout(state.profileSaveTimer)
+  clearProfilePreview()
   state.loaded = false
   state.conflicted = false
   elements.reload.textContent = 'Reload from disk'
@@ -1004,10 +1140,28 @@ elements.fileInput.addEventListener('change', uploadMedia)
 elements.profileUpload.addEventListener('click', () => elements.profileFile.click())
 elements.profileFile.addEventListener('change', uploadProfile)
 elements.profileResolution.addEventListener('change', () => {
+  state.profileCustomResolution = elements.profileResolution.value === 'custom'
+  if (state.profileCustomResolution) {
+    renderProfile()
+    elements.profileCustomResolution.focus()
+    elements.profileCustomResolution.select()
+    return
+  }
   changeFraming()
-  // Generate the selected resolution immediately, then show the saved file in both previews.
-  saveProfile()
 })
+elements.profileCustomResolution.addEventListener('input', changeFraming)
+elements.profileCustomResolution.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault()
+    if (changeFraming()) {
+      window.clearTimeout(state.profilePreviewTimer)
+      previewProfile(state.profilePreviewGeneration)
+    }
+  }
+})
+elements.profileApply.addEventListener('click', () => saveProfile())
+elements.profileDiscard.addEventListener('click', discardProfilePreview)
+elements.profileCleanup.addEventListener('click', cleanupProfileVersions)
 elements.profileEditorImage.addEventListener('load', () => {
   const image = elements.profileEditorImage
   elements.profileDimensions.textContent = `${image.naturalWidth} × ${image.naturalHeight} px`

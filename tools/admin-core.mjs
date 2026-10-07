@@ -40,8 +40,8 @@ export function validateProfile(value = defaultProfile) {
     addIssue(issues, 'profile.sourceImage', 'Use a local original image at /images/<filename>.')
   }
   const resolution = value.resolution ?? 0
-  if (![0, 256, 512, 1024].includes(resolution)) {
-    addIssue(issues, 'profile.resolution', 'Choose original, 256, 512 or 1024 pixels.')
+  if (!Number.isInteger(resolution) || resolution < 0 || resolution > 8192) {
+    addIssue(issues, 'profile.resolution', 'Use 0 for original or a whole number from 1 through 8192 pixels.')
   }
   for (const [key, min, max] of [['zoom', 1, 3], ['x', 0, 100], ['y', 0, 100]]) {
     if (!Number.isFinite(value[key]) || value[key] < min || value[key] > max) {

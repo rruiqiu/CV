@@ -99,7 +99,13 @@
                   <option value="1024">1024 px · High</option>
                   <option value="512">512 px · Balanced</option>
                   <option value="256">256 px · Softer</option>
+                  <option value="custom">Custom pixels…</option>
                 </select>
+                <label id="profile-custom-resolution-field" hidden>
+                  Custom pixels (longest edge)
+                  <input id="profile-custom-resolution" type="number" min="1" max="8192" step="1" value="700" aria-describedby="profile-custom-resolution-note" disabled />
+                  <span class="field-note" id="profile-custom-resolution-note">1–8192 px · e.g. 700 or 736 · Preview only</span>
+                </label>
                 <p class="field-note" id="profile-dimensions"></p>
                 <label for="profile-zoom">Zoom <output id="profile-zoom-value" for="profile-zoom">100%</output></label>
                 <div class="photo-zoom-row">
@@ -112,9 +118,12 @@
                 <label for="profile-y">Vertical position</label>
                 <input id="profile-y" type="range" min="0" max="100" step="1" value="50" disabled />
                 <button class="button button-quiet" id="profile-reset" type="button" disabled>Reset framing</button>
+                <button class="button button-primary" id="profile-apply" type="button" disabled>Apply photo &amp; clean up</button>
+                <button class="button button-quiet" id="profile-discard" type="button" disabled>Discard preview</button>
+                <button class="button button-secondary" id="profile-cleanup" type="button" disabled>Clean up old versions</button>
               </div>
             </div>
-            <p class="field-note">Preview matches the photo on your site. Uploads and framing changes save automatically to this project.</p>
+            <p class="field-note">Try resolution and framing changes without saving extra files. Apply photo when ready; unused generated versions are removed automatically. Uploads still save your original to the project.</p>
             <p class="field-note">Resolution limits the longest edge and reduces detail without changing the display size. Your original is kept, so you can switch back anytime.</p>
             <p class="field-note" id="profile-path">/images/profile.jpg</p>
           </section>
