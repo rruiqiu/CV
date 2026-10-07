@@ -18,6 +18,8 @@ const state = {
   conflicted: false,
   publishPlanId: null,
   loaded: false,
+  profileDirty: false,
+  profileSaveTimer: null,
 }
 
 const elements = {
@@ -86,6 +88,21 @@ const elements = {
   statusMessage: document.querySelector('#status-message'),
   upload: document.querySelector('#upload-button'),
   year: document.querySelector('#year'),
+  profileUpload: document.querySelector('#profile-upload'),
+  profileFile: document.querySelector('#profile-file'),
+  profileZoom: document.querySelector('#profile-zoom'),
+  profileZoomValue: document.querySelector('#profile-zoom-value'),
+  profileZoomIn: document.querySelector('#profile-zoom-in'),
+  profileZoomOut: document.querySelector('#profile-zoom-out'),
+  profileX: document.querySelector('#profile-x'),
+  profileY: document.querySelector('#profile-y'),
+  profileReset: document.querySelector('#profile-reset'),
+  profileEditorImage: document.querySelector('#profile-editor-image'),
+  profilePreviewImage: document.querySelector('#profile-preview-image'),
+  profileSaveState: document.querySelector('#profile-save-state'),
+  profilePath: document.querySelector('#profile-path'),
+  profileResolution: document.querySelector('#profile-resolution'),
+  profileDimensions: document.querySelector('#profile-dimensions'),
 }
 
 const projectEditableFields = [
@@ -122,9 +139,9 @@ function setStatus(message, tone = 'neutral') {
 function setDirty(dirty) {
   state.dirty = dirty
   if (!state.busy) {
-    elements.draftState.textContent = state.conflicted ? 'Conflict' : dirty ? 'Unsaved' : 'Saved'
+    elements.draftState.textContent = state.conflicted ? 'Conflict' : dirty || state.profileDirty ? 'Unsaved' : 'Saved'
   }
-  elements.draftState.dataset.dirty = String(dirty)
+  elements.draftState.dataset.dirty = String(dirty || state.profileDirty)
   updateControls()
 }
 
@@ -132,7 +149,7 @@ function setBusy(busy, label = 'Working') {
   state.busy = busy
   if (busy) elements.draftState.textContent = label
   else {
-    elements.draftState.textContent = state.conflicted ? 'Conflict' : state.dirty ? 'Unsaved' : 'Saved'
+    elements.draftState.textContent = state.conflicted ? 'Conflict' : state.dirty || state.profileDirty ? 'Unsaved' : 'Saved'
   }
   updateControls()
 }
@@ -148,11 +165,16 @@ function updateControls() {
   const introductionEnabled = baseEnabled && state.activeView === 'introduction'
   for (const field of projectEditableFields) field.disabled = !projectEnabled
   for (const field of introductionEditableFields) field.disabled = !introductionEnabled
+  for (const field of [elements.profileUpload, elements.profileFile, elements.profileZoom,
+    elements.profileZoomIn, elements.profileZoomOut, elements.profileX, elements.profileY,
+    elements.profileReset, elements.profileResolution]) field.disabled = !introductionEnabled
+  elements.profileZoomOut.disabled = !introductionEnabled || state.content.profile?.zoom <= 1
+  elements.profileZoomIn.disabled = !introductionEnabled || state.content.profile?.zoom >= 3
   elements.introductionEntry.disabled = !state.loaded || state.busy
   elements.add.disabled = !state.loaded || state.busy
   elements.delete.disabled = !projectEnabled
   elements.upload.disabled = !projectEnabled
-  elements.save.disabled = !state.loaded || state.busy || state.conflicted || !state.dirty
+  elements.save.disabled = !state.loaded || state.busy || state.conflicted || (!state.dirty && !state.profileDirty)
   elements.publish.disabled = !state.loaded || state.busy || state.conflicted
   elements.projectActions.hidden = state.activeView !== 'project'
 
@@ -250,6 +272,7 @@ function filteredProjects() {
 }
 
 function renderIntroductionPreview() {
+  renderProfile()
   const copy = state.content.introduction[state.previewLanguage]
   elements.introductionPreviewCard.lang = state.previewLanguage === 'zh' ? 'zh-CN' : 'en'
   elements.introductionPreviewHeadline.textContent =
@@ -262,6 +285,109 @@ function renderIntroductionPreview() {
       'aria-pressed',
       String(button.dataset.previewLanguage === state.previewLanguage),
     )
+  }
+}
+
+function profileStatus(message, tone = 'neutral') {
+  elements.profileSaveState.textContent = message
+  elements.profileSaveState.dataset.tone = tone
+}
+
+function renderProfile() {
+  const profile = state.content.profile
+  if (!profile) return
+  for (const image of [elements.profileEditorImage, elements.profilePreviewImage]) {
+    if (image.getAttribute('src') !== profile.image) image.src = profile.image
+    image.style.objectPosition = `${profile.x}% ${profile.y}%`
+    image.style.transform = `scale(${profile.zoom})`
+    image.style.transformOrigin = `${profile.x}% ${profile.y}%`
+  }
+  elements.profileZoom.value = String(profile.zoom)
+  elements.profileZoomValue.textContent = `${Math.round(profile.zoom * 100)}%`
+  elements.profileX.value = String(profile.x)
+  elements.profileY.value = String(profile.y)
+  elements.profileResolution.value = String(profile.resolution ?? 0)
+  elements.profilePath.textContent = profile.image
+}
+
+function queueProfileSave() {
+  window.clearTimeout(state.profileSaveTimer)
+  state.profileSaveTimer = window.setTimeout(async () => {
+    if (state.busy) { queueProfileSave(); return }
+    if (!state.profileDirty || state.conflicted || !state.loaded) return
+    await saveProfile()
+  }, 650)
+}
+
+function changeFraming() {
+  state.content.profile.zoom = Number(elements.profileZoom.value)
+  state.content.profile.x = Number(elements.profileX.value)
+  state.content.profile.y = Number(elements.profileY.value)
+  state.content.profile.resolution = Number(elements.profileResolution.value)
+  state.profileDirty = true
+  profileStatus('Waiting to save…')
+  renderProfile()
+  setDirty(state.dirty)
+  queueProfileSave()
+}
+
+async function saveProfile(file) {
+  if (state.busy || state.conflicted || !state.loaded) return false
+  window.clearTimeout(state.profileSaveTimer)
+  const focusedField = document.activeElement
+  setBusy(true, file ? 'Uploading photo' : 'Saving photo')
+  profileStatus(file ? 'Uploading…' : 'Saving…')
+  try {
+    const { body, response } = await apiJson('/api/profile', {
+      method: file ? 'POST' : 'PUT',
+      headers: {
+        'Content-Type': file ? 'application/octet-stream' : 'application/json',
+        'If-Match': state.etag,
+        'X-Admin-Token': state.token,
+      },
+      body: file || JSON.stringify(state.content.profile),
+    })
+    state.content.profile = body.profile
+    state.etag = response.headers.get('ETag') || body.etag
+    state.profileDirty = false
+    renderProfile()
+    setDirty(state.dirty)
+    profileStatus('Saved locally', 'success')
+    setStatus('Photo and framing saved to this project. Publish when you are ready to update the live site.', 'success')
+    return true
+  } catch (error) {
+    profileStatus('Not saved · Try again', 'error')
+    setStatus(errorMessage(error), 'error')
+    if (error.status === 409 && error.details?.code === 'etag_conflict') {
+      state.conflicted = true
+      elements.reload.hidden = false
+    }
+    return false
+  } finally {
+    setBusy(false)
+    if (focusedField?.isConnected && !focusedField.disabled) focusedField.focus({ preventScroll: true })
+  }
+}
+
+async function uploadProfile() {
+  const file = elements.profileFile.files?.[0]
+  elements.profileFile.value = ''
+  if (!file) return
+  if (file.size > 10 * 1024 * 1024) {
+    setStatus('Choose a profile photo of 10 MB or smaller.', 'error')
+    return
+  }
+  // Decode locally first so a corrupt image cannot replace the current photo.
+  const previewUrl = URL.createObjectURL(file)
+  try {
+    const image = new Image()
+    image.src = previewUrl
+    await image.decode()
+    await saveProfile(file)
+  } catch {
+    setStatus('This photo could not be opened. Choose a JPEG, PNG, WebP, GIF or AVIF image.', 'error')
+  } finally {
+    URL.revokeObjectURL(previewUrl)
   }
 }
 
@@ -508,6 +634,7 @@ function moveProject(direction) {
 function contentForSave() {
   return {
     version: 2,
+    profile: { ...state.content.profile },
     introduction: {
       en: {
         headline: state.content.introduction.en.headline,
@@ -625,7 +752,8 @@ async function saveProjects() {
     setStatus('Reload the latest disk content before saving this draft again.', 'error')
     return false
   }
-  if (!state.dirty) return true
+  if (!state.dirty && !state.profileDirty) return true
+  window.clearTimeout(state.profileSaveTimer)
   const activeForm = state.activeView === 'introduction'
     ? elements.introductionForm
     : elements.projectForm
@@ -646,6 +774,8 @@ async function saveProjects() {
     state.content = body.content
     state.etag = response.headers.get('ETag') || body.etag
     state.conflicted = false
+    state.profileDirty = false
+    profileStatus('Saved locally', 'success')
     elements.reload.hidden = true
     setDirty(false)
     renderList()
@@ -708,7 +838,8 @@ function appendPublishDetail(text) {
 }
 
 async function preparePublish() {
-  if (state.dirty && !(await saveProjects())) return
+  if (state.busy) return
+  if ((state.dirty || state.profileDirty) && !(await saveProjects())) return
   state.publishPlanId = null
   setBusy(true, 'Checking Git')
   setStatus('Checking the Git publish plan…')
@@ -809,6 +940,8 @@ async function loadWorkspace() {
     state.token = sessionResult.body.token
     state.etag = projectsResponse.headers.get('ETag')
     state.content = await projectsResponse.json()
+    state.profileDirty = false
+    profileStatus('Saved locally', 'success')
     state.loaded = true
     state.conflicted = false
     elements.reload.textContent = 'Reload from disk'
@@ -832,7 +965,9 @@ async function loadWorkspace() {
 }
 
 async function reloadWorkspace() {
-  if (state.dirty && !window.confirm('Discard the current local draft and reload projects from disk?')) return
+  if (state.busy) return
+  if ((state.dirty || state.profileDirty) && !window.confirm('Discard the current local draft and reload projects from disk?')) return
+  window.clearTimeout(state.profileSaveTimer)
   state.loaded = false
   state.conflicted = false
   elements.reload.textContent = 'Reload from disk'
@@ -866,6 +1001,31 @@ elements.cancelPublish.addEventListener('click', () => {
 elements.confirmPublish.addEventListener('click', publishProjects)
 elements.upload.addEventListener('click', () => elements.fileInput.click())
 elements.fileInput.addEventListener('change', uploadMedia)
+elements.profileUpload.addEventListener('click', () => elements.profileFile.click())
+elements.profileFile.addEventListener('change', uploadProfile)
+elements.profileResolution.addEventListener('change', () => {
+  changeFraming()
+  // Generate the selected resolution immediately, then show the saved file in both previews.
+  saveProfile()
+})
+elements.profileEditorImage.addEventListener('load', () => {
+  const image = elements.profileEditorImage
+  elements.profileDimensions.textContent = `${image.naturalWidth} × ${image.naturalHeight} px`
+})
+for (const field of [elements.profileZoom, elements.profileX, elements.profileY]) {
+  field.addEventListener('input', changeFraming)
+}
+for (const [button, amount] of [[elements.profileZoomIn, 0.1], [elements.profileZoomOut, -0.1]]) {
+  button.addEventListener('click', () => {
+    elements.profileZoom.value = String(Math.min(3, Math.max(1, Number(elements.profileZoom.value) + amount)))
+    changeFraming()
+  })
+}
+elements.profileReset.addEventListener('click', () => {
+  elements.profileZoom.value = '1'
+  elements.profileX.value = elements.profileY.value = '50'
+  changeFraming()
+})
 
 for (const button of elements.filterButtons) {
   button.addEventListener('click', () => {
@@ -912,7 +1072,7 @@ elements.publishDialog.addEventListener('close', () => {
 })
 
 window.addEventListener('beforeunload', (event) => {
-  if (!state.dirty && !state.busy) return
+  if (!state.dirty && !state.profileDirty && !state.busy) return
   event.preventDefault()
   event.returnValue = ''
 })

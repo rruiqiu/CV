@@ -38,7 +38,7 @@
           <span class="content-entry-mark" aria-hidden="true">IN</span>
           <span class="content-entry-copy">
             <strong>Introduction</strong>
-            <span>English &amp; Chinese profile copy</span>
+            <span>Profile photo &amp; bilingual copy</span>
           </span>
           <span aria-hidden="true">›</span>
         </button>
@@ -77,6 +77,47 @@
         </div>
 
         <form id="introduction-form">
+          <section class="language-block photo-block" aria-labelledby="profile-photo-heading">
+            <div class="language-heading">
+              <div>
+                <p class="eyebrow">PROFILE PHOTO</p>
+                <h3 id="profile-photo-heading">Your photo</h3>
+              </div>
+              <span id="profile-save-state" role="status" aria-live="polite">Saved locally</span>
+            </div>
+            <div class="photo-editor-layout">
+              <div class="profile-photo-frame photo-editor-frame">
+                <img id="profile-editor-image" src="/images/profile.jpg" alt="Profile photo crop preview" />
+              </div>
+              <div class="photo-editor-controls">
+                <button class="button button-secondary" id="profile-upload" type="button" disabled>Upload selfie</button>
+                <input id="profile-file" type="file" accept="image/avif,image/jpeg,image/png,image/gif,image/webp" hidden disabled />
+                <p class="field-note">JPEG, PNG, WebP, GIF or AVIF · Up to 10 MB</p>
+                <label for="profile-resolution">Photo resolution</label>
+                <select id="profile-resolution" disabled>
+                  <option value="0">Original · Full detail</option>
+                  <option value="1024">1024 px · High</option>
+                  <option value="512">512 px · Balanced</option>
+                  <option value="256">256 px · Softer</option>
+                </select>
+                <p class="field-note" id="profile-dimensions"></p>
+                <label for="profile-zoom">Zoom <output id="profile-zoom-value" for="profile-zoom">100%</output></label>
+                <div class="photo-zoom-row">
+                  <button class="icon-button" id="profile-zoom-out" type="button" aria-label="Zoom out" disabled>−</button>
+                  <input id="profile-zoom" type="range" min="1" max="3" step="0.01" value="1" disabled />
+                  <button class="icon-button" id="profile-zoom-in" type="button" aria-label="Zoom in" disabled>+</button>
+                </div>
+                <label for="profile-x">Horizontal position</label>
+                <input id="profile-x" type="range" min="0" max="100" step="1" value="50" disabled />
+                <label for="profile-y">Vertical position</label>
+                <input id="profile-y" type="range" min="0" max="100" step="1" value="50" disabled />
+                <button class="button button-quiet" id="profile-reset" type="button" disabled>Reset framing</button>
+              </div>
+            </div>
+            <p class="field-note">Preview matches the photo on your site. Uploads and framing changes save automatically to this project.</p>
+            <p class="field-note">Resolution limits the longest edge and reduces detail without changing the display size. Your original is kept, so you can switch back anytime.</p>
+            <p class="field-note" id="profile-path">/images/profile.jpg</p>
+          </section>
           <section class="language-block" aria-labelledby="english-introduction-heading" lang="en">
             <div class="language-heading">
               <div>
@@ -223,7 +264,9 @@
         </div>
         <div class="preview-stage">
           <article class="introduction-preview-card" id="introduction-preview-card">
-            <img src="/images/profile.jpg" alt="Richard Qiu" />
+            <div class="profile-photo-frame photo-preview-frame">
+              <img id="profile-preview-image" src="/images/profile.jpg" alt="Richard Qiu" />
+            </div>
             <div>
               <p class="introduction-preview-name">Richard Qiu</p>
               <p class="introduction-preview-headline" id="introduction-preview-headline">Introduction opening line</p>

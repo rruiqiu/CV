@@ -6,12 +6,14 @@ import { createServer } from 'node:http'
 import { extname, join, sep } from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { fileURLToPath } from 'node:url'
+import sharp from 'sharp'
 import {
   ContentValidationError,
   detectUploadedMedia,
   readContentSnapshot,
   serializeContent,
   validateContent,
+  validateProfile,
   writeContentAtomically,
 } from './admin-core.mjs'
 
@@ -62,7 +64,7 @@ const securityHeaders = {
   'Content-Security-Policy': [
     "default-src 'self'",
     "connect-src 'self'",
-    "img-src 'self' data: http: https:",
+    "img-src 'self' data: blob: http: https:",
     "media-src 'self' blob: http: https:",
     "style-src 'self'",
     "script-src 'self'",
@@ -176,6 +178,8 @@ function localMediaReferences(content) {
     references.set(src, { src, expectedType, label })
   }
 
+  addReference(content.profile.image, 'image', 'Profile photo')
+  addReference(content.profile.sourceImage, 'image', 'Original profile photo')
   for (const project of content.projects) {
     addReference(project.image, project.mediaType, `${project.name} media`)
     if (project.demo && project.demoType === 'video') {
@@ -264,7 +268,6 @@ async function saveProjects(req) {
   const ifMatch = req.headers['if-match']
   if (!ifMatch) throw new HttpError(428, 'Reload the page before saving content.')
   const content = validateContent(await readJsonBody(req))
-  await validateLocalMedia(content)
 
   const current = await readContentSnapshot(projectsFile)
   if (ifMatch !== current.etag) {
@@ -273,13 +276,57 @@ async function saveProjects(req) {
       currentEtag: current.etag,
     })
   }
-  return writeContentAtomically(projectsFile, content)
+  return writeProfileContent(content, current)
 }
 
-async function saveUpload(req) {
+async function writeProfileContent(content, current) {
+  const profile = content.profile
+  let generatedPath
+  try {
+    // Validate the original before opening it with the image decoder.
+    await validateLocalMedia({ profile, projects: [] })
+    if (profile.resolution === 0) {
+      profile.image = profile.sourceImage
+    } else if (profile.sourceImage === current.content.profile.sourceImage && profile.resolution === current.content.profile.resolution) {
+      profile.image = current.content.profile.image
+    } else {
+      let resized
+      try {
+        const sourceBytes = await readFile(join(imagesRoot, profile.sourceImage.slice('/images/'.length)))
+        resized = await sharp(sourceBytes, { limitInputPixels: 40_000_000 })
+          .rotate()
+          .resize(profile.resolution, profile.resolution, { fit: 'inside', withoutEnlargement: true })
+          .webp({ quality: 85 })
+          .toBuffer()
+      } catch {
+        throw new HttpError(422, 'This photo could not be resized. Choose another JPEG, PNG, WebP, GIF or AVIF image.')
+      }
+      const filename = `profile-${randomUUID()}-${profile.resolution}.webp`
+      generatedPath = join(imagesRoot, filename)
+      const handle = await open(generatedPath, 'wx')
+      try {
+        await handle.writeFile(resized)
+        await handle.sync()
+      } finally {
+        await handle.close()
+      }
+      profile.image = `/images/${filename}`
+    }
+    await validateLocalMedia(content)
+    if ((await readContentSnapshot(projectsFile)).etag !== current.etag) {
+      throw new HttpError(409, 'Portfolio content changed on disk. Reload before saving again.', { code: 'etag_conflict' })
+    }
+    return await writeContentAtomically(projectsFile, content)
+  } catch (error) {
+    if (generatedPath) await unlink(generatedPath).catch(() => {})
+    throw error
+  }
+}
+
+async function saveUpload(req, { imageOnly = false } = {}) {
   const declaredLength = Number.parseInt(req.headers['content-length'] ?? '0', 10)
-  if (declaredLength > maxVideoBytes) {
-    throw new HttpError(413, 'Videos must be 100 MB or smaller.')
+  if (declaredLength > (imageOnly ? maxImageBytes : maxVideoBytes)) {
+    throw new HttpError(413, imageOnly ? 'Images must be 10 MB or smaller.' : 'Videos must be 100 MB or smaller.')
   }
 
   const temporaryPath = join(imagesRoot, `.portfolio-upload-${randomUUID()}.tmp`)
@@ -298,6 +345,8 @@ async function saveUpload(req) {
         header = Buffer.concat([header, chunk.subarray(0, missingHeaderBytes)])
       }
       if (!detected && header.length >= 12) detected = detectUploadedMedia(header)
+      if (imageOnly && totalBytes > maxImageBytes) throw new HttpError(413, 'Images must be 10 MB or smaller.')
+      if (imageOnly && detected?.mediaType === 'video') throw new HttpError(415, 'Choose an image for your profile photo.')
       if (detected?.mediaType === 'image' && totalBytes > maxImageBytes) {
         throw new HttpError(413, 'Images must be 10 MB or smaller.')
       }
@@ -309,6 +358,7 @@ async function saveUpload(req) {
     if (!detected) {
       throw new HttpError(415, 'Use AVIF, JPEG, PNG, GIF, WebP, MP4, WebM, or MOV media.')
     }
+    if (imageOnly && detected.mediaType !== 'image') throw new HttpError(415, 'Choose an image for your profile photo.')
     if (detected.mediaType === 'image' && totalBytes > maxImageBytes) {
       throw new HttpError(413, 'Images must be 10 MB or smaller.')
     }
@@ -329,6 +379,27 @@ async function saveUpload(req) {
   } catch (error) {
     if (handle) await handle.close().catch(() => {})
     await unlink(temporaryPath).catch(() => {})
+    throw error
+  }
+}
+
+async function saveProfile(req) {
+  const current = await readContentSnapshot(projectsFile)
+  if (!req.headers['if-match']) throw new HttpError(428, 'Reload the page before saving your photo.')
+  if (req.headers['if-match'] !== current.etag) {
+    throw new HttpError(409, 'Portfolio content changed on disk. Reload before saving again.', {
+      code: 'etag_conflict', currentEtag: current.etag,
+    })
+  }
+  let uploaded
+  try {
+    const profile = validateProfile(req.method === 'POST'
+      ? { image: (uploaded = await saveUpload(req, { imageOnly: true })).path, resolution: current.content.profile.resolution, zoom: 1, x: 50, y: 50 }
+      : await readJsonBody(req))
+    const content = { ...current.content, profile }
+    return await writeProfileContent(content, current)
+  } catch (error) {
+    if (uploaded) await unlink(join(imagesRoot, uploaded.path.slice('/images/'.length))).catch(() => {})
     throw error
   }
 }
@@ -604,6 +675,13 @@ const server = createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/assets') {
       ensureAuthorized(req, { requireOrigin: true })
       sendJson(res, 201, await withMutation(req, () => saveUpload(req)))
+      return
+    }
+
+    if ((req.method === 'POST' || req.method === 'PUT') && url.pathname === '/api/profile') {
+      ensureAuthorized(req, { requireOrigin: true })
+      const saved = await withMutation(req, () => saveProfile(req))
+      sendJson(res, 200, { profile: saved.content.profile, etag: saved.etag }, { ETag: saved.etag })
       return
     }
 

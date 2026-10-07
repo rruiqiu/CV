@@ -92,6 +92,8 @@ The project manager runs only on your computer. It is not included in the GitHub
 
 2. Open http://127.0.0.1:4173.
 3. Edit the bilingual introduction, or add, edit, reorder, and hide projects and upload project media.
+   Under **Introduction → Your photo**, upload a selfie and adjust zoom or horizontal/vertical framing. The portrait preview matches the website. Photos are saved in `public/images/`, and the photo path and framing are saved automatically in `content/projects.json`. Other unsaved introduction/project edits stay in your draft. Use **Reset framing** to return to the full fitted photo.
+   **Photo resolution** offers Original, 1024, 512, and 256 px (longest edge). Lower resolutions create smaller WebP images and soften fine detail while preserving the same display size and framing. The original stays in the project; selecting Original restores it. Both the active image and original are included when publishing.
 4. Choose **Save locally** to validate and write `content/projects.json`.
 5. Choose **Publish** to review the Git plan, commit only portfolio content/media, and push to `main`. The existing GitHub Action then rebuilds the static site and deploys it to GitHub Pages.
 

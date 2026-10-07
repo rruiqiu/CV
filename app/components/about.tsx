@@ -1,11 +1,11 @@
 'use client'
 import Link from 'next/link'
 import style from '@/styles/about.module.css'
-import ProfileImg from '@/public/images/profile.jpg'
 import Image from 'next/image'
 import { FaGithub } from 'react-icons/fa'
 import { FaLinkedin } from 'react-icons/fa'
-import { introduction } from '@/app/data/projects'
+import { introduction, profile } from '@/app/data/projects'
+import { getImageSrc } from '@/app/data/imageImports'
 
 interface navbarprops {
   theme: string
@@ -18,14 +18,15 @@ const about: React.FC<navbarprops> = (props) => {
     <>
       <div id={style.container}>
         <div className={style.Introcontainer}>
-          <div>
+          <div className={style.Profileframe}>
             <Image
-              src={ProfileImg}
+              src={getImageSrc(profile.image)}
               className={style.Profilepicture}
-              sizes="100vw"
-              alt="Profile image"
+              fill
+              sizes="254px"
+              style={{ objectPosition: `${profile.x}% ${profile.y}%`, transform: `scale(${profile.zoom})`, transformOrigin: `${profile.x}% ${profile.y}%` }}
+              alt="Richard Qiu"
               priority={true}></Image>
-            {/* <img src="/images/profile.jpg" alt="" /> */}
           </div>
           <div>
             {props.language === 'En' ? (

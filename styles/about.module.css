@@ -21,10 +21,9 @@
     max-width: 900px;
   }
 
-  .Profilepicture {
+  .Profileframe {
     border-radius: 20px;
     width: 254px;
-    height: auto;
     margin-top: 48px;
     margin-right: 40px;
     margin-left: 10px;
@@ -81,10 +80,9 @@
   margin: 12px 0;
 }
 @media (max-width: 516px) {
-  .Profilepicture {
+  .Profileframe {
     border-radius: 15px;
     width: 254px;
-    height: auto;
     margin-top: 25px;
     /* margin: 0; */
   }
@@ -115,4 +113,16 @@
   .pstyleDark {
     font-size: 1.1rem;
   }
+}
+
+.Profileframe {
+  position: relative;
+  flex-shrink: 0;
+  align-self: flex-start;
+  aspect-ratio: 1861 / 2248;
+  overflow: hidden;
+}
+
+.Profilepicture {
+  object-fit: cover;
 }

@@ -11,10 +11,13 @@ import {
   serializeContent,
   validateContent,
   writeContentAtomically,
+  defaultProfile,
+  validateProfile,
 } from './admin-core.mjs'
 
 const validContent = {
   version: 2,
+  profile: { ...defaultProfile },
   introduction: {
     en: {
       headline: "Hi, I'm Richard — a software engineer based in Toronto.",
@@ -44,6 +47,30 @@ const validContent = {
 
 test('validates and normalizes portfolio content', () => {
   assert.deepEqual(validateContent(validContent), validContent)
+})
+
+test('loads older content with the existing profile photo', () => {
+  const olderContent = structuredClone(validContent)
+  delete olderContent.profile
+  assert.deepEqual(validateContent(olderContent).profile, defaultProfile)
+})
+
+test('validates photo framing and rejects unsafe profile media', () => {
+  const profile = { image: '/images/selfie.webp', zoom: 2.1, x: 0, y: 100 }
+  assert.deepEqual(validateProfile(profile), { ...profile, sourceImage: profile.image, resolution: 0 })
+  for (const invalid of [
+    { image: '/images/../selfie.jpg' }, { image: 'https://example.com/selfie.jpg' },
+    { image: '/images/selfie.mp4' }, { zoom: 0.9 }, { zoom: 3.1 },
+    { x: -1 }, { y: 101 }, { zoom: '2' }, { x: NaN }, { unexpected: true },
+    { resolution: 300 }, { resolution: '512' }, { sourceImage: '/images/../secret.jpg' },
+  ]) {
+    assert.throws(() => validateProfile({ ...profile, ...invalid }), ContentValidationError)
+  }
+})
+
+test('accepts reduced resolution while preserving the original image', () => {
+  const profile = { ...defaultProfile, image: '/images/reduced.webp', resolution: 512 }
+  assert.deepEqual(validateProfile(profile), profile)
 })
 
 test('repository project content matches the local admin schema', async () => {

@@ -33,6 +33,7 @@ export interface PortfolioProject {
 const projects = portfolioContent.projects as PortfolioProject[]
 
 export const introduction = portfolioContent.introduction as PortfolioIntroduction
+export const profile = portfolioContent.profile
 
 export const pastProjects = projects.filter(
   (project) => project.published && project.section === 'past',

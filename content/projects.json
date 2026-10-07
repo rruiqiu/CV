@@ -1,5 +1,13 @@
 {
   "version": 2,
+  "profile": {
+    "image": "/images/profile-99c547df-433f-48c2-af3a-821c2f0efe4d-512.webp",
+    "sourceImage": "/images/906ee33d-bbfd-4fdb-98b3-c48cebb86cc7.jpg",
+    "resolution": 512,
+    "zoom": 1,
+    "x": 19,
+    "y": 50
+  },
   "introduction": {
     "en": {
       "headline": "Hi, I'm Richard — an enthusiastic software engineer!",

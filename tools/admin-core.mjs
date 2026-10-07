@@ -19,6 +19,38 @@ const projectKeys = new Set([
 
 const introductionKeys = new Set(['en', 'zh'])
 const introductionLocaleKeys = new Set(['body', 'headline'])
+const profileKeys = new Set(['image', 'sourceImage', 'resolution', 'zoom', 'x', 'y'])
+
+export const defaultProfile = { image: '/images/profile.jpg', sourceImage: '/images/profile.jpg', resolution: 0, zoom: 1, x: 50, y: 50 }
+
+export function validateProfile(value = defaultProfile) {
+  const issues = []
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new ContentValidationError([{ path: 'profile', message: 'Must be an object.' }])
+  }
+  for (const key of Object.keys(value)) {
+    if (!profileKeys.has(key)) addIssue(issues, `profile.${key}`, 'Unknown field.')
+  }
+  const image = requiredString(value.image, 'profile.image', issues, 2048)
+  if (!isLocalImagePath(image) || !hasImageExtension(image)) {
+    addIssue(issues, 'profile.image', 'Use a local image at /images/<filename>.')
+  }
+  const sourceImage = requiredString(value.sourceImage ?? image, 'profile.sourceImage', issues, 2048)
+  if (!isLocalImagePath(sourceImage) || !hasImageExtension(sourceImage)) {
+    addIssue(issues, 'profile.sourceImage', 'Use a local original image at /images/<filename>.')
+  }
+  const resolution = value.resolution ?? 0
+  if (![0, 256, 512, 1024].includes(resolution)) {
+    addIssue(issues, 'profile.resolution', 'Choose original, 256, 512 or 1024 pixels.')
+  }
+  for (const [key, min, max] of [['zoom', 1, 3], ['x', 0, 100], ['y', 0, 100]]) {
+    if (!Number.isFinite(value[key]) || value[key] < min || value[key] > max) {
+      addIssue(issues, `profile.${key}`, `Must be a number from ${min} through ${max}.`)
+    }
+  }
+  if (issues.length) throw new ContentValidationError(issues)
+  return { image, sourceImage, resolution, zoom: value.zoom, x: value.x, y: value.y }
+}
 
 export class ContentValidationError extends Error {
   constructor(issues) {
@@ -224,13 +256,20 @@ export function validateContent(value) {
   }
 
   for (const key of Object.keys(value)) {
-    if (key !== 'version' && key !== 'introduction' && key !== 'projects') {
+    if (key !== 'version' && key !== 'introduction' && key !== 'projects' && key !== 'profile') {
       addIssue(issues, key, 'Unknown field.')
     }
   }
 
   if (value.version !== 2) addIssue(issues, 'version', 'Must be 2.')
   const introduction = validateIntroduction(value.introduction, issues)
+  let profile
+  try {
+    profile = validateProfile(value.profile)
+  } catch (error) {
+    if (!(error instanceof ContentValidationError)) throw error
+    issues.push(...error.issues)
+  }
   if (!Array.isArray(value.projects) || value.projects.length > 100) {
     addIssue(issues, 'projects', 'Must be an array with no more than 100 projects.')
   }
@@ -245,7 +284,7 @@ export function validateContent(value) {
   }
 
   if (issues.length) throw new ContentValidationError(issues)
-  return { version: 2, introduction, projects }
+  return { version: 2, profile, introduction, projects }
 }
 
 export function serializeContent(content) {

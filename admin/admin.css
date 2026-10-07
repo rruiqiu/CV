@@ -781,13 +781,43 @@ textarea:focus {
   box-shadow: 0 24px 50px rgb(0 0 0 / 25%);
 }
 
-.introduction-preview-card img {
-  width: 88px;
-  height: 88px;
+.profile-photo-frame {
+  position: relative;
+  aspect-ratio: 1861 / 2248;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #1a2025;
+}
+
+.profile-photo-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border: 1px solid #3b454e;
-  border-radius: 50%;
-  filter: saturate(0.88);
+}
+
+.photo-editor-frame { width: 100%; max-width: 254px; }
+.photo-preview-frame { width: 100%; max-width: 254px; }
+
+.photo-editor-layout {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(140px, 1fr);
+  align-items: start;
+  gap: 20px;
+}
+
+.photo-editor-controls { display: grid; gap: 10px; min-width: 0; }
+.photo-editor-controls label { display: flex !important; justify-content: space-between; }
+.photo-editor-controls input[type="range"] { width: 100%; min-width: 0; padding: 0; accent-color: var(--accent-strong); }
+.photo-zoom-row { display: flex; align-items: center; gap: 8px; }
+.photo-zoom-row .icon-button { flex-shrink: 0; }
+#profile-path { overflow-wrap: anywhere; }
+#profile-save-state { width: auto; height: auto; padding: 5px 8px; white-space: nowrap; }
+#profile-save-state[data-tone="error"] { color: var(--danger); }
+
+@media (max-width: 600px) {
+  .photo-editor-layout { grid-template-columns: 1fr; }
+  .photo-editor-frame { margin-inline: auto; }
 }
 
 .introduction-preview-name {
